@@ -110,7 +110,11 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	
 	<flow name="order-api-main" processingStrategy="synchronous">
 		<inbound-endpoint ref="order-api-ep" doc:name="http-order"/>
+        <set-session-variable variableName="test" value="123" doc:name="Session Variable"/>
 		<apikit:router config-ref="order-api-config" doc:name="APIkit Router" />
+        <response>
+            <logger message="logging final outbound payload #[payload]" level="INFO" doc:name="Logger"/>
+        </response>
 		<exception-strategy ref="default-exc-strategy-api-xml"
 			doc:name="Reference Exception Strategy" />
 	</flow>

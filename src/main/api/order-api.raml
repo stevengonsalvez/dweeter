@@ -99,6 +99,8 @@ traits: !include common-traits.yaml
           required: false
       responses:
         200:
+          body:
+            text/plain:
     put:
       description: Create an Order in the Order Hub.
         **Note** The response will be in the format of the request content-type
