@@ -23,8 +23,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	</spring:beans>
 
 	<!-- specify location only to satisfy Studio - it's not used -->
-	<context:property-placeholder properties-ref="dashboard-service-props" location="unused"
-		ignore-resource-not-found="true" />
 	<context:property-placeholder location="application.properties"/>
 	<configuration doc:name="Common Configuration">
 		<expression-language>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans"
@@ -15,10 +16,13 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<global-property name="logger.order-api"
 		value="com.fl3x.mule.configfile.order-api" doc:name="Logger" />
 
-	<http:connector name="order-http-conn" keepAlive="false"
-		validateConnections="true" sendBufferSize="0" receiveBufferSize="0"
-		receiveBacklog="0" clientSoTimeout="10000" serverSoTimeout="10000"
-		socketSoLinger="0" doc:name="fl3x-http-conn" />
+	<http:connector name="order-http-conn" validateConnections="true" keepAlive="true" sendTcpNoDelay="true" doc:name="HTTP Connector">
+		<core:receiver-threading-profile poolExhaustedAction="DISCARD" maxThreadsActive="20"
+			maxThreadsIdle="20" />
+		<core:service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
+	</http:connector>
+	
+	
 
 	<apikit:config name="order-api-config" raml="order-api.raml"
 		consoleEnabled="false" doc:name="Router" />
@@ -102,7 +106,16 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 				doc:name="Internal processing error" />
 		</apikit:mapping>
 	</apikit:mapping-exception-strategy>
-
+	
+	
+	<flow name="giftcard-frontend-api-console">
+		<http:inbound-endpoint connector-ref="order-http-conn"
+			host="0.0.0.0" port="18004" path="order/api/console" doc:name="HTTP"
+			exchange-pattern="request-response" />
+		<apikit:console config-ref="order-api-config"
+			doc:name="frontend API console" />
+	</flow>
+	
 	<flow name="order-api-main" processingStrategy="synchronous">
 		<http:inbound-endpoint connector-ref="order-http-conn"
 			host="0.0.0.0" port="18004" path="order/api" doc:name="HTTP"
@@ -117,6 +130,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 		<logger
 			message="#[logIn('entering into invocation of orderId')]"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+        <logger message="#['${http.conn.max.threads.active}'] parameters to be prinred frm properties" level="INFO" doc:name="Logger"/>
         <flow-ref name="get-order-orderid" doc:name="get-order-orderid"/>
         <logger message="#[payload] ===== this is the payload at the moment." level="INFO" doc:name="Logger"/>
         <set-payload value="&lt;a&gt;&lt;b&gt;123&lt;/b&gt;&lt;/a&gt;" doc:name="Set Payload"/>
