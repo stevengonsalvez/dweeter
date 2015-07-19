@@ -26,4 +26,39 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	<context:property-placeholder properties-ref="dashboard-service-props" location="unused"
 		ignore-resource-not-found="true" />
 	<context:property-placeholder location="application.properties"/>
+	<configuration doc:name="Common Configuration">
+		<expression-language>
+			<import class="org.springframework.util.Assert" />
+			<import class="java.util.Map" />
+			<import class="java.util.List" />
+			<import class="org.apache.log4j.NDC" />
+			<global-functions><![CDATA[
+			def where()                { return "in flow " + flow.name + " in app " + app.name; }
+			def assertType(clazz)      { Assert.isInstanceOf(clazz, payload, "payload is of unexpected type " + where() + ": "); }
+			def assertNotNull()        { Assert.notNull(payload, "payload is null " + where() + ": "); }
+			def assertContains(str)    { Assert.isTrue(payload is String && payload.contains(str), "payload does not contain [" + str + "] " + where() + ": "); }
+        	def throw(msg)             { Assert.isTrue(false, msg); }
+			def cleanProps(map)        { result = new java.util.LinkedHashMap(map); result.remove('MULE_SESSION'); result.remove('LOCAL_CERTIFICATES'); return result; }
+			def logPush()      { NDC.push(message.id); }
+			def logPop()       { NDC.pop(); }
+	        def logIn(msg)     { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || inbound props: "  + cleanProps(message.inboundProperties)                                                                   + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | inbound payload  " + message.payloadAs(String); }
+	        def logOut(msg)    { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || outbound props: " + cleanProps(message.outboundProperties) + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | outbound payload " + message.payloadAs(String); }
+	        def logExc(msg)    { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || inbound props: "  + cleanProps(message.inboundProperties) +  " | outbound props: " + cleanProps(message.outboundProperties) + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | outbound payload " + message.payloadAs(String); }
+	        def auditPayload(msg, pl) {
+	          apl = [
+	            "context" : [ "message" : msg, "app" : app.name, "node" : mule.nodeId, "cluster" : mule.clusterId ], 
+	            "header"  : [ "inboundProperties" : cleanProps(message.inboundProperties), "flowVars" : flowVars, "sessionVars" : sessionVars, "outboundProperties" : cleanProps(message.outboundProperties) ]
+	          ];
+	          if (pl == null || (pl != 'false' && pl != false)) {
+	          	if (payload != null && (payload is String || payload is Map || payload is List)) apl['payload'] = payload;
+	          }
+	          return apl;
+	        }
+        	]]></global-functions>
+		</expression-language>
+	</configuration>
+	
+	<global-property name="logger.common-mule-config"
+		value="com.fl3x.mule.configfile.common-mule-config" doc:name="Logger" />
+	
 </mule>

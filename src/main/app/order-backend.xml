@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+<global-property name="logger.order-backend"
+		value="com.fl3x.mule.configfile.order-backend" doc:name="Logger" />
+    <db:generic-config name="fl3xdb_conn" url="jdbc:mysql://fl3xdb.cp6lbq4klxrk.us-east-1.rds.amazonaws.com:3306/fl3xdb?user=fl3x&amp;password=metal123&amp;connectTimeout=2000&amp;socketTimeout=2000" driverClassName="com.mysql.jdbc.Driver" doc:name="Generic Database Configuration"/>
+    <db:mysql-config name="MySQL_Configuration" host="fl3xdb.cp6lbq4klxrk.us-east-1.rds.amazonaws.com" port="3306" user="fl3x" password="metal123" database="fl3xdb" doc:name="MySQL Configuration" driverClassName="com.mysql.jdbc.Driver"/>
+		
+	<flow name="get-order-orderid" processingStrategy="synchronous">
+		<logger message="#[logIn('corder ID retreive backend implementation')]" level="DEBUG"
+			doc:name="Log orderId request Details" category="${logger.order-backend}" />
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[select * from order_address]]></db:parameterized-query>
+        </db:select>
+		<logger message="#[logOut('order data returned')]"
+			level="DEBUG" doc:name="log orderId return details" category="${logger.order-backend}" />
+	</flow>
+</mule>
