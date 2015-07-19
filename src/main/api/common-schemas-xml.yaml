@@ -1,0 +1,2 @@
+common-msg-envelope-xml:   !include fl3xEnvelope.xsd
+common-error-response-xml: !include common-error-response.xsd

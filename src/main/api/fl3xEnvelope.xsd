@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fl3x="fl3x.io/api/2015/schemas/envelope/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0.0">
+	<xs:include schemaLocation="fl3xHeader.xsd"/>
+	<xs:include schemaLocation="fl3xOrder.xsd"/>
+	<xs:element name="fl3xApiResponse">
+		<xs:annotation>
+			<xs:documentation>This document serves as the wrapper for the fl3x Api Responses</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="fl3xApiHeader"/>
+				<xs:element ref="orderData"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

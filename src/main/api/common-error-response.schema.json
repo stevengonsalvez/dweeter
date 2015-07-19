@@ -1,0 +1,16 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#", 
+	"title": "fl3x Common Error Reponse in JSON", 
+	"type": "object", 
+	"properties": {
+		"message": {
+			"type": "string"
+		}
+	}, 
+
+	"required": [
+		"message"
+	], 
+
+	"additionalProperties": true
+}

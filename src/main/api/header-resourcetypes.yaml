@@ -1,0 +1,18 @@
+- fl3x-types:
+    usage: This resourceType should be used for any collection of items
+    get?:
+      headers:
+        Accept?:
+          description: |
+             This will specify the format of the response that the client wants as the response to the invocation. The supported types now are json, xml, csv.
+          required: false
+          enum: [ application/xml, application/json, text/csv]
+          default: application/json
+        x-callback-url?:
+          description: |
+              This will the callback URL specified by the client . The format of the callback URL will be 
+              HTTP : x-callback-url: <http://example.com/callback>; method="post"; username="opensesame"; password="openup";
+          type: string
+          required: false
+          maxLength: 1000
+          example: http://example.com/callback; method="post"; username="opensesame"; password="openup";

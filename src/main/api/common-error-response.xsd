@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fl3x="fl3x.io/api/2015/schemas/error/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0.0">
+	<xs:element name="message">
+		<xs:annotation>
+			<xs:documentation>The error message.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true"/>
+	</xs:element>
+</xs:schema>

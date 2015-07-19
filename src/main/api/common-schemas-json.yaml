@@ -1,0 +1,2 @@
+common-msg-envelope-json:   !include common-api-wrapper.schema.json
+common-error-response-json: !include common-error-response.schema.json

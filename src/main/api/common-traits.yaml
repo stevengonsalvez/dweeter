@@ -1,0 +1,262 @@
+- with-common-params:
+    description: Adds query parameters for the entries in the fl3x common api wrapper.
+    queryParameters:
+      language:
+        description: |
+          (fl3x common api wrapper property.)
+          The language of the message in ISO 639-1:2002 format with the primary sub-code for language ("en"), and an optional sub-code in capital letters for national variety (e.g., "GB" or "US").
+      transactionId:
+        description: |
+          (fl3x common api wrapper property.)
+          A unique identifier of the message provided by source application and should be of format.
+          This value will also replicate as a unique batch identifier.
+      correlationId:
+        description: |
+          (fl3x common api wrapper property.)
+          Sending application defined and used for asynch api's.
+      createdTimestamp:
+        description: |
+          (fl3x common api wrapper property.)
+          The created timestamp is held to provide the timestamp when the message wrapper is created by the sending application.
+        type: string
+        pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(.[0-9]+)?(?:(Z)?|((?:\\+|\\-)[0-9]{2}:[0-9]{2})?)$"
+      clientApplication:
+        description: |
+          (fl3x common api wrapper property.)
+          Name of the sending application.
+      securityClassification:
+        description: |
+          (fl3x common api wrapper property.)
+          Classification of the data sensitivity for the content. 
+      payloadKey:
+        description: |
+          (fl3x common api wrapper property.)
+          The business identifier or key for the message (say ORDER ID, PRODUCT ID etc). Leave blank if batch of messages
+      etag:
+        description: |
+          (fl3x common api wrapper property.)
+          Placeholder for Entity tag of HTTP. Can be used for cache validation or fingerprinting a record to see if the data has changed since last accessed. Leave empty unless cached HTTP request services are being implemented
+- with-common-error-responses-json:
+    description: Adds common error responses
+    responses:
+      400:
+        description: |
+          Bad Request:
+          The request could not be understood by the server due to malformed syntax. 
+          The client SHOULD NOT repeat the request without modifications.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Bad request" }
+      401:
+        description: |
+          Unauthorized:
+          The request requires user authentication. 
+          The response MUST include a WWW-Authenticate header field containing a challenge applicable to the requested resource. 
+          The client MAY repeat the request with a suitable Authorization header field. 
+          If the request already included Authorization credentials, then the 401 response indicates that authorization has been refused for those credentials. 
+          If the 401 response contains the same challenge as the prior response, and the user agent has already attempted authentication at least once, 
+          then the user SHOULD be presented the entity that was given in the response, since that entity might include relevant diagnostic information. 
+        body: 
+          application/json:
+            schema: common-error-response-json
+            example: |
+              { "message": "Unauthorized" }
+      404:
+        description: |
+          Not Found:
+          The server has not found anything matching the Request-URI. 
+          No indication is given of whether the condition is temporary or permanent. 
+          The 410 (Gone) status code SHOULD be used if the server knows, through some internally configurable mechanism, that an old resource is permanently unavailable and has no forwarding address. 
+          This status code is commonly used when the server does not wish to reveal exactly why the request has been refused, or when no other response is applicable.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Resource not found" }
+      405:
+        description: |
+          Method Not Allowed:
+          The method specified in the Request-Line is not allowed for the resource identified by the Request-URI. 
+          The response MUST include an Allow header containing a list of valid methods for the requested resource.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Method not allowed" }
+      406:
+        description: |
+          Not Acceptable:
+          The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Not acceptable" }
+      409:
+        description: |
+          Conflict:
+          The request could not be completed due to a conflict with the current state of the resource. 
+          This code is only allowed in situations where it is expected that the user might be able to resolve the conflict and resubmit the request. 
+          The response body SHOULD include enough information for the user to recognize the source of the conflict. 
+          Ideally, the response entity would include enough information for the user or user agent to fix the problem; 
+          however, that might not be possible and is not required.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Internal mapping error" }
+      415:
+        description: |
+          Unsupported Media Type:
+          The server is refusing to service the request because the entity of the request is in a format not supported by the requested resource for the requested method.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Unsupported media type" }
+      500:
+        description: |
+          Internal Server Error:
+          The server encountered an unexpected condition which prevented it from fulfilling the request.
+        body: 
+          application/json: 
+            schema: common-error-response-json
+            example: |
+              { "message": "Internal processing error" }
+- with-common-error-responses-xml:
+    responses:
+      400:
+        description: |
+          Bad Request:
+          The request could not be understood by the server due to malformed syntax. 
+          The client SHOULD NOT repeat the request without modifications.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Bad request</message>
+      401:
+        description: |
+          Unauthorized:
+          The request requires user authentication. 
+          The response MUST include a WWW-Authenticate header field containing a challenge applicable to the requested resource. 
+          The client MAY repeat the request with a suitable Authorization header field. 
+          If the request already included Authorization credentials, then the 401 response indicates that authorization has been refused for those credentials. 
+          If the 401 response contains the same challenge as the prior response, and the user agent has already attempted authentication at least once, 
+          then the user SHOULD be presented the entity that was given in the response, since that entity might include relevant diagnostic information. 
+        body: 
+          application/xml:
+            schema: common-error-response-xml
+            example: |
+              <message>Unauthorized</message>
+      404:
+        description: |
+          Not Found:
+          The server has not found anything matching the Request-URI. 
+          No indication is given of whether the condition is temporary or permanent. 
+          The 410 (Gone) status code SHOULD be used if the server knows, through some internally configurable mechanism, that an old resource is permanently unavailable and has no forwarding address. 
+          This status code is commonly used when the server does not wish to reveal exactly why the request has been refused, or when no other response is applicable.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Resource not found</message>
+      405:
+        description: |
+          Method Not Allowed:
+          The method specified in the Request-Line is not allowed for the resource identified by the Request-URI. 
+          The response MUST include an Allow header containing a list of valid methods for the requested resource.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Method not allowed</message>
+      406:
+        description: |
+          Not Acceptable:
+          The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Not acceptable</message>
+      409:
+        description: |
+          Conflict:
+          The request could not be completed due to a conflict with the current state of the resource. 
+          This code is only allowed in situations where it is expected that the user might be able to resolve the conflict and resubmit the request. 
+          The response body SHOULD include enough information for the user to recognize the source of the conflict. 
+          Ideally, the response entity would include enough information for the user or user agent to fix the problem; 
+          however, that might not be possible and is not required.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Internal mapping error</message>
+      415:
+        description: |
+          Unsupported Media Type:
+          The server is refusing to service the request because the entity of the request is in a format not supported by the requested resource for the requested method.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Unsupported media type</message>
+      500:
+        description: |
+          Internal Server Error:
+          The server encountered an unexpected condition which prevented it from fulfilling the request.
+        body: 
+          application/xml: 
+            schema: common-error-response-xml
+            example: |
+              <message>Internal processing error</message>
+- with-nocontent-location-json:
+      responses:
+        202:
+          description: |
+            The request has been accepted for processing, but the processing has not been completed. The request might or might not eventually be acted upon, as it might be disallowed when processing actually takes place. There is no facility for re-sending a status code from an asynchronous operation such as this.
+              location will be provided where the status can be checked.
+          body:
+            application/json:
+              example: |
+                {
+                  "status": "pending",
+                  "location": "https://fl3x.io/order/api/1/orders"
+                  "until": "2015-10-13T01:01:01"  
+                }
+- with-nocontent-location-xml:
+    responses:
+      202:
+        description: |
+          The request has been accepted for processing, but the processing has not been completed. The request might or might not eventually be acted upon, as it might be disallowed when processing actually takes place. There is no facility for re-sending a status code from an asynchronous operation such as this.
+          A location will be provided where the status can be checked.
+        body:
+          application/xml:
+            example: |
+              <message>
+                <status>pending</status>
+                <location>https://fl3x.io/order/api/1/orders</location>
+                <until>2015-10-13T01:01:01</until>
+              </message>
+              
+- with-common-put-response-xml:
+    responses:
+      200:
+        description: |
+          The request to create (put) is successfully processed. The resource is located at the url.
+        body:
+          application/xml:
+            example: |
+              <location>https://fl3x.io/order/api/1/orders/{orderId}</location>
+- with-common-put-response-json:
+    responses:
+      200:
+        description: |
+          The request to create (put) is successfully processed. The resource is located at the url.
+        body:
+          application/json:
+            example: |
+              { "location" : "https://fl3x.io/order/api/1/orders/{orderId}" }

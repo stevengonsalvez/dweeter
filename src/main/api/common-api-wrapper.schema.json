@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "title": " fl3x Api Wrapper",
+    "type": "object",
+    "properties": {
+        "fl3xApiResponse": {
+            "type": "object",
+            "properties": {
+                "fl3xApiHeader": {
+                    "type": "object",
+                    "required": false,
+                    "properties": {
+                        "language": {
+                            "type": "string"
+                        },
+                        "transactionId": {
+                            "type": "string"
+                        },
+                        "correlationId": {
+                            "type": "string"
+                        },
+                        "createdTimestamp": {
+                            "type": "string",
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$"
+                        },
+                        "clientApplication": {
+                            "type": "string"
+                        },
+                        "securityClassification": {
+                            "type": "string"
+                        },
+                        "payloadKey": {
+                            "type": "string"
+                        },
+                        "etag": {
+                            "type": "string"
+                        },
+                        "additionalProperties": true
+                    },
+                    "fl3xApiPayload": {
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

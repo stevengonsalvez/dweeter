@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:context="http://www.springframework.org/schema/context" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans"
+	version="CE-3.6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<!-- identifies the current M&S environment (mns.env.deploytime is substituted by its value at deploytime) -->
+	<!-- <global-property name="mns.env" value="${mns.env.deploytime}" doc:name="mns.env" /> -->
+
+	<spring:beans>
+		<spring:bean id="dashboard-service-props" name="dashboard-service-props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+			<spring:property name="locations">
+				<spring:list value-type="org.springframework.core.io.Resource">
+					<spring:value>classpath:dashboard-service.properties</spring:value>
+				</spring:list>
+			</spring:property>
+			<spring:property name="ignoreResourceNotFound" value="false" />
+		</spring:bean>
+	</spring:beans>
+
+	<!-- specify location only to satisfy Studio - it's not used -->
+	<context:property-placeholder properties-ref="dashboard-service-props" location="unused"
+		ignore-resource-not-found="true" />
+	<context:property-placeholder location="application.properties"/>
+</mule>
