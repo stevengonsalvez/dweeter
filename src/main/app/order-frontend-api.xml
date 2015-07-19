@@ -16,11 +16,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<global-property name="logger.order-api"
 		value="com.fl3x.mule.configfile.order-api" doc:name="Logger" />
 
-	<http:connector name="http-conn-shared" validateConnections="true" keepAlive="true" sendTcpNoDelay="true" doc:name="HTTP Connector" clientSoTimeout="10000" cookieSpec="netscape" receiveBacklog="0" receiveBufferSize="0" sendBufferSize="0" serverSoTimeout="10000" socketSoLinger="0">
-		<core:receiver-threading-profile poolExhaustedAction="DISCARD" maxThreadsActive="${http.conn.max.threads.active}"
-			maxThreadsIdle="${http.conn.max.threads.idle}" />
-		<core:service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
-	</http:connector>
+	
 	
 
 	<apikit:config name="order-api-config" raml="order-api.raml" consoleEnabled="false" doc:name="Router" />
@@ -107,17 +103,13 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	
 	
 	<flow name="order-api-console">
-		<http:inbound-endpoint connector-ref="http-conn-shared"
-			host="0.0.0.0" port="18004" path="order/api/console" doc:name="HTTP"
-			exchange-pattern="request-response" />
+		<inbound-endpoint ref="order-api-console-ep" doc:name="http-order"/>
 		<apikit:console config-ref="order-api-config"
 			doc:name="frontend API console" />
 	</flow>
 	
 	<flow name="order-api-main" processingStrategy="synchronous">
-		<http:inbound-endpoint connector-ref="http-conn-shared"
-			host="0.0.0.0" port="18004" path="order/api" doc:name="HTTP"
-			exchange-pattern="request-response" />
+		<inbound-endpoint ref="order-api-ep" doc:name="http-order"/>
 		<apikit:router config-ref="order-api-config" doc:name="APIkit Router" />
 		<exception-strategy ref="default-exc-strategy-api-xml"
 			doc:name="Reference Exception Strategy" />

@@ -83,9 +83,19 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 		<mule-ss:delegate-security-provider name="service-memory-sec-provider" delegate-ref="service-auth-mgr" />
 	</mule-ss:security-manager>
 	
-	<http:endpoint name="frontend-api-http-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.ep.path}"
+	<http:connector name="http-conn-shared" validateConnections="true" keepAlive="true" sendTcpNoDelay="true" doc:name="HTTP Connector" clientSoTimeout="10000" cookieSpec="netscape" receiveBacklog="0" receiveBufferSize="0" sendBufferSize="0" serverSoTimeout="10000" socketSoLinger="0">
+		<core:receiver-threading-profile poolExhaustedAction="DISCARD" maxThreadsActive="${http.conn.max.threads.active}"
+			maxThreadsIdle="${http.conn.max.threads.idle}" />
+		<core:service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
+	</http:connector>
+	
+	<http:endpoint name="order-api-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.ep.path}"
 		keepAlive="true" connector-ref="http-conn-shared" doc:name="order API HTTP endpoint">
-		<mule-ss:http-security-filter realm="Marks and Spencer Service Authentication" securityManager-ref="service-sec-mgr" />
+		<mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" />
+	</http:endpoint>
+	<http:endpoint name="order-api-console-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.console.ep.path}"
+		keepAlive="true" connector-ref="http-conn-shared" doc:name=" API console HTTP endpoint">
+		<mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" />
 	</http:endpoint>
 	
 </mule>
