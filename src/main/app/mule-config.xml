@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:context="http://www.springframework.org/schema/context" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans"
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security" 
+	xmlns:ss="http://www.springframework.org/schema/security"
 	version="CE-3.6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/3.1/mule-spring-security.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
 	<!-- identifies the current M&S environment (mns.env.deploytime is substituted by its value at deploytime) -->
 	<!-- <global-property name="mns.env" value="${mns.env.deploytime}" doc:name="mns.env" /> -->
@@ -58,5 +68,24 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	
 	<global-property name="logger.common-mule-config"
 		value="com.fl3x.mule.configfile.common-mule-config" doc:name="Logger" />
+		
+	<!-- security manager configuration for this app, specifically for the services it exposes -->
+	<spring:beans>
+		<ss:authentication-manager alias="service-auth-mgr">
+			<ss:authentication-provider>
+				<ss:user-service id="user-svc">
+					<ss:user name="${service.auth.username}" password="${service.auth.password}" authorities="ROLE_ADMIN" />
+				</ss:user-service>
+			</ss:authentication-provider>
+		</ss:authentication-manager>
+	</spring:beans>
+	<mule-ss:security-manager name="service-sec-mgr">
+		<mule-ss:delegate-security-provider name="service-memory-sec-provider" delegate-ref="service-auth-mgr" />
+	</mule-ss:security-manager>
+	
+	<http:endpoint name="frontend-api-http-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.ep.path}"
+		keepAlive="true" connector-ref="http-conn-shared" doc:name="order API HTTP endpoint">
+		<mule-ss:http-security-filter realm="Marks and Spencer Service Authentication" securityManager-ref="service-sec-mgr" />
+	</http:endpoint>
 	
 </mule>
