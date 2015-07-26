@@ -124,6 +124,9 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 		<logger
 			message="#[logIn('entering into invocation of orderId')]"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+			<logger
+			message="value of orderID ****** is #[orderId]"
+			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
         <logger message="#['${http.conn.max.threads.active}'] parameters to be prinred frm properties" level="INFO" doc:name="Logger"/>
         <flow-ref name="get-order-orderid" doc:name="get-order-orderid"/>
         <logger message="#[payload] ===== this is the payload at the moment." level="INFO" doc:name="Logger"/>

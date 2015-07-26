@@ -1,0 +1,181 @@
+{
+  "orderData": {
+    "language": "en_GB",
+    "merchant": {
+      "type": "organisation",
+      "name": "Amazon.com",
+      "merchantId": "xxsd",
+      "channel": "store or website"
+    },
+    "seller": {
+      "type": "Store",
+      "sellerId": "1ASD09128",
+      "name": "Digital Enterprises ltd"
+    },
+    "customer": {
+      "type": "guest",
+      "email": "steven.gonsalvezgmail.com",
+      "customerId": "001-123456789",
+      "merchantCustomerId": "5601231",
+      "marketingSubscriptionFlag": "true"
+    },
+    "marketing": { "notdecidedyet": "#tobefilled" },
+    "orderHeader": {
+      "type": "wholesale",
+      "orderId": "123-4567890-1234567",
+      "orderDate": "2014-07-02T06:00:00",
+      "userSourceData": {
+        "device": "mobile",
+        "ipAddress": "172.89.77.23"
+      },
+      "giftDetails": {
+        "orderIsGift": "true",
+        "GiftMessage": "this is a test gift message to be stored"
+      },
+      "charges": {
+        "currency": "GBP",
+        "netPrice": "29.99",
+        "grossPrice": "39.99",
+        "specialPackageCharge": "0",
+        "adjustment": "10",
+        "salesTax": "0",
+        "netShippingCharge": "3.5",
+        "grossShippingCharge": "5",
+        "shippingOfferAdjustment": "-1.5",
+        "shippingTax": "0"
+      },
+      "promotion": {
+        "sellerPromotionCode": "123123123"
+      },
+      "status": {
+        "customerStatus": "pending despatch",
+        "warehouseStatus": "pending despatch",
+        "apiNotes": "order in progress",
+        "userNotes": "sometext",
+        "callCenterNotes": "some query",
+        "orderCompleted": "false",
+        "isCancelled": "false",
+        "cancellationReason": "None",
+        "lastUpdatedTimestamp": "2014-07-02T19:00:00"
+      },
+      "billingInfo": {
+        "address": {
+          "type": "home",
+          "title": "Mr",
+          "firstName": "steven",
+          "lastName": "gonsalvez",
+          "addressLine1": "608, Cardinal Building",
+          "addressLine2": "Station Approach",
+          "addressLine3": "Hayes",
+          "town": "London",
+          "county": "Middlesex",
+          "country": "UK",
+          "postcode": "UB34DE",
+          "fax": "100-10231-0202",
+          "email": "steven.gonsalvezgmail.com",
+          "phone": "02087185104",
+          "mob": "07789230123"
+        },
+        "paymentInfo": {
+          "paymentMethod": "creditcard",
+          "cardholderName": "s gonsalvez",
+          "cardType": "Visa",
+          "lastfourDigits": "1231",
+          "obfuscatedCardNumber": "************1234 ",
+          "encryptedCvv": "asdfnaksjnflkajo1jksndf",
+          "encryptedAAV": "asdfaiunj",
+          "secureComplete": "true",
+          "paymentAuthorisationCode": "askjdfisundfkjabsfjhabsdjkfbasjkf",
+          "expiryDate": "MMYYYY"
+        }
+      },
+      "invoiceInfo": {
+        "invoiceNumber": "123123",
+        "invoiceDate": "2014-07-02T19:00:00"
+      },
+      "shippingInfo": {
+        "deliveryInformation": { "deliveryMethod": "NEXT’,’STANDARD’,’PREMIUM’,’ECONOMY’ or ‘INTERNATIONAL’" },
+        "status": {
+          "shippedTimestamp": "2013-03-10T12:00:00-08:00",
+          "expectedArrivalFrom": "2013-03-10T12:00:00-08:00",
+          "expectedArrivalUntil": "2013-03-12T12:00:00-08:00",
+          "deliveredOn": "2013-03-12T12:00:00-08:00",
+          "carrier": {
+            "type": "Organization",
+            "name": "FedEx",
+            "url": "http://fedex.com/"
+          },
+          "tracking": {
+            "trackingId": "asdfkajnsd12312",
+            "trackingUrl": "http://fedex.com/track/3453291231"
+          }
+        },
+        "address": {
+          "type": "home",
+          "title": "Mr",
+          "firstName": "steven",
+          "lastName": "gonsalvez",
+          "addressLine1": "608, Cardinal Building",
+          "addressLine2": "Station Approach",
+          "addressLine3": "Hayes",
+          "town": "London",
+          "county": "Middlesex",
+          "country": "UK",
+          "postcode": "UB34DE",
+          "fax": "100-10231-0202",
+          "email": "steven.gonsalvezgmail.com",
+          "phone": "02087185104",
+          "mob": "07789230123"
+        }
+      }
+    },
+    "orderItem": {
+      "itemDetail": [
+        {
+          "type": "product",
+          "lineId": "1",
+          "sku": "10981238",
+          "alternateItemId": "1023120123",
+          "itemName": "slimline pants",
+          "itemDescription": "test information",
+          "itemUrl": "https://y5p.com",
+          "grossPrice": "4.99",
+          "netPrice": "3.25",
+          "discount": "0.10",
+          "tax": "0.5",
+          "currency": "GBP",
+          "quantity": "1",
+          "itemStatus": {
+            "statusCode": "00A1",
+            "status": "picked",
+            "isCancelled": "false",
+            "cancellationReason": "sometext",
+            "lastUpdatedTimestamp": "2014-07-02T19:00:00"
+          }
+        },
+        {
+          "type": "product",
+          "lineId": "2",
+          "sku": "1019231",
+          "alternateItemId": "13",
+          "itemName": "32 inch belt brogo",
+          "itemDescription": "test information",
+          "itemUrl": "https://y5p.com",
+          "grossPrice": "6.99",
+          "netPrice": "4.25",
+          "discount": "0.00",
+          "tax": "0.0",
+          "currency": "GBP",
+          "quantity": "1",
+          "itemStatus": {
+            "statusCode": "00A1",
+            "status": "tagged",
+            "isCancelled": "true",
+            "cancellationReason": "sometext",
+            "lastUpdatedTimestamp": "2014-07-02T19:00:00"
+          }
+        }
+      ]
+    }
+  }
+}
