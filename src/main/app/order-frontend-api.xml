@@ -127,11 +127,20 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 			<logger
 			message="value of orderID ****** is #[orderId]"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
-        <logger message="#['${http.conn.max.threads.active}'] parameters to be prinred frm properties" level="INFO" doc:name="Logger"/>
         <flow-ref name="get-order-orderid" doc:name="get-order-orderid"/>
-        <logger message="#[payload] ===== this is the payload at the moment." level="INFO" doc:name="Logger"/>
-        <set-payload value="&lt;a&gt;&lt;b&gt;123&lt;/b&gt;&lt;/a&gt;" doc:name="Set Payload"/>
-        <logger message="#[payload] this is payload after 5555555555555555555555" level="INFO" doc:name="logger"/>
+       <logger message="#[logOut('exiting the invocation of orderId')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
+	</flow>
+	
+	<flow name="put:/orders/{orderId}:order-api-config"
+		processingStrategy="synchronous">
+		<logger
+			message="#[logIn('entering into creation of Order in the Hub')]"
+			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+			<logger
+			message="value of orderID ****** is #[orderId]"
+			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+        <flow-ref name="put-order-orderid" doc:name="get-order-orderid"/>
+        <logger message="#[logOut('exiting creation of order')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
 	</flow>
 
 

@@ -101,12 +101,19 @@ traits: !include common-traits.yaml
         200:
           body:
             text/plain:
+            application/json:
+            application/xml:
     put:
       description: Create an Order in the Order Hub.
         **Note** The response will be in the format of the request content-type
       is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml, with-common-put-response-json, with-common-put-response-xml]
       body:
         application/json:
+      responses:
+        200:
+          body:
+            applicaton/json:
+            application/xml:
     /status:
       type: fl3x-types
       get:
