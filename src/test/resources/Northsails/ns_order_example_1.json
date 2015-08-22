@@ -1,0 +1,172 @@
+{
+    "orderData": {
+        "language": "en_GB",
+        "channel": "web",
+        "merchant": {
+            "type": "organisation",
+            "name": "NorthSails",
+            "merchantId": "NS-1",
+            "channel": "web"
+        },
+        "seller": {
+            "type": "web",
+            "sellerId": "NS-1",
+            "name": "NorthSails"
+        },
+        "customer": {
+            "type": "gold",
+            "email": "barbara1@gmail.com",
+            "customerId": "barbara1@gmail.com",
+            "merchantCustomerId": "",
+            "marketingSubscriptionFlag": "true"
+        },
+        "marketing": {
+            "type": "post"
+        },
+        "orderHeader": {
+            "type": "wholesale",
+            "orderId": "145123453",
+            "orderDate": "2015-08-21",
+            "userSourceData": {
+                "device": "mobile",
+                "ipAddress": "172.89.77.23"
+            },
+            "giftDetails": {
+                "orderIsGift": false,
+                "GiftMessage": ""
+            },
+            "charges": {
+                "currency": "GBP",
+                "netPrice": 29.99,
+                "grossPrice": 29.99,
+                "effectivePrice": 34.99,
+                "specialPackageCharge": 0,
+                "adjustment": 0,
+                "salesTax": 0,
+                "netShippingCharge": 5.00,
+                "grossShippingCharge": 5.00,
+                "shippingOfferAdjustment": 0,
+                "shippingTax": 0
+            },
+            "promotion": {
+                "sellerPromotionCode": "NO-PROMO"
+            },
+            "status": {
+                "customerStatus": "pending despatch",
+                "warehouseStatus": "pending despatch",
+                "apiNotes": "order in progress",
+                "userNotes": "",
+                "callCenterNotes": "",
+                "orderCompleted": "false",
+                "isCancelled": "false",
+                "cancellationReason": "None",
+                "lastUpdatedTimestamp": "2015-08-21T19:00:00"
+            },
+            "billingInfo": {
+                "address": {
+                    "type": "home",
+                    "title": "Mrs",
+                    "firstName": "Barbara",
+                    "lastName": "Thompson",
+                    "company": "",
+                    "division": "",
+                    "addressLine1": "608, Cardinal Building",
+                    "addressLine2": "Station Approach",
+                    "addressLine3": "Hayes",
+                    "town": "London",
+                    "county": "Middlesex",
+                    "country": "UK",
+                    "postcode": "UB34DE",
+                    "fax": "",
+                    "email": "Barbara1@gmail.com",
+                    "phone": "02087185104",
+                    "mob": "07789230123"
+                },
+                "paymentInfo": {
+                    "paymentMethod": "creditcard",
+                    "cardholderName": "",
+                    "cardType": "",
+                    "lastfourDigits": "",
+                    "obfuscatedCardNumber": "",
+                    "encryptedCvv": "",
+                    "encryptedAAV": "",
+                    "secureComplete": "",
+                    "paymentAuthorisationCode": "",
+                    "expiryDate": ""
+                }
+            },
+            "shippingInfo": {
+                "deliveryInformation": {
+                    "deliveryMethod": "STANDARD"
+                },
+                "address": {
+                    "type": "home",
+                    "title": "Mrs",
+                    "firstName": "Barbara",
+                    "lastName": "Thompson",
+                    "company": "",
+                    "division": "",
+                    "addressLine1": "608, Cardinal Building",
+                    "addressLine2": "Station Approach",
+                    "addressLine3": "Hayes",
+                    "town": "London",
+                    "county": "Middlesex",
+                    "country": "UK",
+                    "postcode": "UB34DE",
+                    "fax": "",
+                    "email": "Barbara1@gmail.com",
+                    "phone": "02087185104",
+                    "mob": "07789230123"
+                }
+            }
+        },
+        "orderItem": {
+            "itemDetail": [
+                {
+                    "type": "product",
+                    "lineId": "1",
+                    "sku": "10981238",
+                    "alternateItemId": "",
+                    "itemName": "slimline pants",
+                    "itemDescription": "test information",
+                    "itemUrl": "https://northsails.com/sku/10981238",
+                    "grossPrice": 14.99,
+                    "netPrice": 14.99,
+                    "discount": 0.00,
+                    "tax": 0.0,
+                    "currency": "GBP",
+                    "quantity": 1,
+                    "itemStatus": {
+                        "statusCode": "00",
+                        "status": "shelf",
+                        "isCancelled": "false",
+                        "cancellationReason": "",
+                        "lastUpdatedTimestamp": "2015-08-21T19:00:00"
+                    }
+                },
+                {
+                    "type": "product",
+                    "lineId": "1",
+                    "sku": "10876232",
+                    "alternateItemId": "",
+                    "itemName": "double collar shirt TS",
+                    "itemDescription": "some product",
+                    "itemUrl": "https://northsails.com/sku/10876232",
+                    "grossPrice": 15.00,
+                    "netPrice": 15.00,
+                    "discount": 0.00,
+                    "tax": 0.0,
+                    "currency": "GBP",
+                    "quantity": 1,
+                    "itemStatus": {
+                        "statusCode": "00",
+                        "status": "shelf",
+                        "isCancelled": "false",
+                        "cancellationReason": "",
+                        "lastUpdatedTimestamp": "2015-08-21T19:00:00"
+                    }
+                }
+            ]
+        }
+    }
+}

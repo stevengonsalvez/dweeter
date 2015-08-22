@@ -28,28 +28,25 @@ traits: !include common-traits.yaml
   get:
     description: Retrieve list of order summaries.
            
-      **Note** If no parameters are specified , retrieves list of order summaries for the last 7 day
-    headers:
-      Accept:
-    is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml]
+      **Note** If no dates are specified , entire list of orders are retrieved 
+    is: [with-common-error-responses-json, with-common-error-responses-xml]
     queryParameters:
       fromDate:
           description: Filter orders by only selecting those with a date (creation) greater than the given ISO 8601 timestamp.
             **Note** that if this parameter is not specified, it will default to two weeks previous to the current date.
           type: string
-          example: "2015-03-01"
           required: false
       toDate:
           description: Filter orders by only selecting those with a date less than the given ISO 8601 timestamp.
              **Note** the default is taken as the current date 
           type: string
-          example: "2015-03-02"
           required: false
       seller:
           description: Filter orders by based on seller
           type: string
           example: "Y5P"
-          required: false
+          enum: ["NS","Y5P"]
+          required: true
       status:
           description: Filter orders by based on status of the order
           type: string
@@ -60,8 +57,9 @@ traits: !include common-traits.yaml
             **Note** this is just an alternative to specifying Accept headers - if format and Accept are not specified then
             it would default to application/json. If Accept is specified then Accept header supersedes the format specification.
           type: string
-          example: application/xml
-          enum: [ "application/xml", "application/json", "text/csv" ]
+          example: xml
+          enum: [ "xml", "json", "csv" ]
+          default: "json"
           required: false
     responses:
       200:
@@ -70,7 +68,7 @@ traits: !include common-traits.yaml
   post:
       description: This method will be used to bulk upload order information into the order hub.
         **Note** Always use the PUT method for a single order since the PUT method is idempotent 
-      is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml, with-nocontent-location-xml, with-nocontent-location-json]
+      is: [with-common-error-responses-json, with-common-error-responses-xml, with-nocontent-location-xml, with-nocontent-location-json]
       headers:
         x-callback-url:
       body:
@@ -79,23 +77,34 @@ traits: !include common-traits.yaml
         200:
           body:
             application/json:
-  /{orderId}:
+  /{sellerId}/{orderId}:
     uriParameters:
+      sellerId:
+        type: string
+        example: y5P
+        enum: [ "Y5P" , "NS" ]
+        required: true
       orderId:
         type: string
         example: 209-1232-00912
+        required: true
     type: fl3x-types
     get:
       description: Retrieve an order.
-      is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml]
+      is: [ with-common-error-responses-json, with-common-error-responses-xml]
       queryParameters:
+        seller:
+          description: Filter orders by based on seller
+          type: string
+          example: "Y5P"
+          required: true
         format:
           description: specify the format the data is required in example {application/xml}
             **Note** this is just an alternative to specifying Accept headers - if format and Accept are not specified then
             it would default to application/json. If Accept is specified then Accept header supersedes the format specification.
           type: string
-          example: application/xml
-          enum: [ "application/xml", "application/json", "text/csv" ]
+          example: xml
+          enum: [ "xml", "json", "csv" ]
           required: false
       responses:
         200:
@@ -106,9 +115,10 @@ traits: !include common-traits.yaml
     put:
       description: Create an Order in the Order Hub.
         **Note** The response will be in the format of the request content-type
-      is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml, with-common-put-response-json, with-common-put-response-xml]
+      is: [ with-common-error-responses-json, with-common-error-responses-xml, with-common-put-response-json, with-common-put-response-xml]
       body:
         application/json:
+        application/xml:
       responses:
         200:
           body:
@@ -118,7 +128,7 @@ traits: !include common-traits.yaml
       type: fl3x-types
       get:
         description: Retrieve an order.
-        is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml]
+        is: [ with-common-error-responses-json, with-common-error-responses-xml]
         headers:
           Accept:
         queryParameters:
@@ -146,7 +156,7 @@ traits: !include common-traits.yaml
     type: fl3x-types
     get:
       description: Retrieve Order History for the customer
-      is: [with-common-params, with-common-error-responses-json, with-common-error-responses-xml]
+      is: [ with-common-error-responses-json, with-common-error-responses-xml]
       headers:
         Accept:
       queryParameters:

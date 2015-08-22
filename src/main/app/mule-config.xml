@@ -52,6 +52,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 	        def logIn(msg)     { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || inbound props: "  + cleanProps(message.inboundProperties)                                                                   + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | inbound payload  " + message.payloadAs(String); }
 	        def logOut(msg)    { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || outbound props: " + cleanProps(message.outboundProperties) + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | outbound payload " + message.payloadAs(String); }
 	        def logExc(msg)    { return msg + " || flow: " + flow.name + " | app: " + app.name + " | node: " + mule.nodeId + " || inbound props: "  + cleanProps(message.inboundProperties) +  " | outbound props: " + cleanProps(message.outboundProperties) + " | flow vars: " + flowVars + " | session vars: " + sessionVars + " | outbound payload " + message.payloadAs(String); }
+	        def setPayKey(key) { HeaderUtil.setPayKey(sessionVars, key); }
 	        def auditPayload(msg, pl) {
 	          apl = [
 	            "context" : [ "message" : msg, "app" : app.name, "node" : mule.nodeId, "cluster" : mule.clusterId ], 
@@ -65,6 +66,10 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
         	]]></global-functions>
 		</expression-language>
 	</configuration>
+	
+	<http:request-config name="elastic_http_request_config" host="${etc.host}" port="${etc.port}" responseTimeout="5000" doc:name="HTTP Request Configuration">
+        <http:basic-authentication username="${etc.username}" password="${etc.password}"/>
+    </http:request-config>
 	
 	<global-property name="logger.common-mule-config"
 		value="com.fl3x.mule.configfile.common-mule-config" doc:name="Logger" />

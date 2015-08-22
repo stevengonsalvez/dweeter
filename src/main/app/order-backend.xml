@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc" xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.6.1"
@@ -9,45 +9,91 @@
 http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
 
 	<global-property name="logger.order-backend"
 		value="com.fl3x.mule.configfile.order-backend" doc:name="Logger" />
-	<db:generic-config name="fl3xdb_conn"
+	<!-- <db:generic-config name="fl3xdb_conn"
 		url="jdbc:mysql://fl3xdb.cp6lbq4klxrk.us-east-1.rds.amazonaws.com:3306/fl3xdb?user=fl3x&amp;password=metal123&amp;connectTimeout=2000&amp;socketTimeout=2000"
 		driverClassName="com.mysql.jdbc.Driver" doc:name="Generic Database Configuration" />
 	<db:mysql-config name="MySQL_Configuration"
 		host="fl3xdb.cp6lbq4klxrk.us-east-1.rds.amazonaws.com" port="3306"
 		user="fl3x" password="metal123" database="fl3xdb" doc:name="MySQL Configuration"
-		driverClassName="com.mysql.jdbc.Driver" />
-    <http:request-config name="elastic_http_request_config" host="${etc.host}" port="${etc.port}" responseTimeout="5000" doc:name="HTTP Request Configuration">
-        <http:basic-authentication username="${etc.username}" password="${etc.password}"/>
-    </http:request-config>
+		driverClassName="com.mysql.jdbc.Driver" /> -->
+    
 
-	<flow name="get-order-orderid" processingStrategy="synchronous">
+	<flow name="get-order-sellerid-orderid" processingStrategy="synchronous">
 		<logger message="#[logIn('corder ID retreive backend implementation')]"
 			level="DEBUG" doc:name="Log orderId request Details" category="${logger.order-backend}" />
 		<!-- <db:select config-ref="MySQL_Configuration" doc:name="Database">
 			<db:parameterized-query><![CDATA[select * from order_address]]></db:parameterized-query>
 		</db:select> -->
-		<http:request config-ref="elastic_http_request_config" path="/fl3x/order/#[orderId]" method="GET" doc:name="HTTP"/>
+		<http:request config-ref="elastic_http_request_config" path="/fl3x/#[sellerId]/#[orderId]/_source" method="GET" doc:name="HTTP">
+		
+		</http:request>
 
 		<logger message="#[logOut('order data returned')]" level="DEBUG"
 			doc:name="log orderId return details" category="${logger.order-backend}" />
 	</flow>
 
-	<flow name="put-order-orderid" processingStrategy="synchronous">
+
+	<flow name="get-orders-seller" processingStrategy="synchronous">
+		<logger message="#[logIn('getting bulk orders seller backend api')]"
+			level="DEBUG" doc:name="Log orderId request Details" category="${logger.order-backend}" />
+		
+		
+		<http:request config-ref="elastic_http_request_config" path="/fl3x/#[sessionVars.sellerId]/_count" method="GET" doc:name="get count of orders for the seller">
+		</http:request>
+        <set-session-variable variableName="count_seller" value="#[json:count]" doc:name="Session Variable"/>
+        <logger message="the total number of orders for seller #[sessionVars.sellerId] is  == #[json:count]" level="DEBUG" category="${logger.order-backend}" doc:name="Logger"/>
+        
+        <http:request config-ref="elastic_http_request_config" path="/fl3x/#[sessionVars.sellerId]/_search" method="GET" doc:name="get all orders for seller">
+            <http:request-builder>
+                <http:query-param paramName="size" value="#[sessionVars.count_seller]"/>
+            </http:request-builder>
+       	    
+		</http:request>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <scripting:transformer doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+def slurper = new JsonSlurper()
+
+def jsonMap= slurper.parseText(payload)
+
+def aggregateOrders = jsonMap.hits.hits
+
+def testOut = []
+aggregateOrders.eachWithIndex{ item , index -> 
+								println index 
+								testOut.add(item._source)
+								}
+
+payload = JsonOutput.toJson(testOut)]]></scripting:script>
+        </scripting:transformer>
+        <set-payload value="{&quot;orderExtract&quot;: {&quot;order&quot;:#[payload]}}" doc:name="Set Payload"/>
+
+		<logger message="#[logOut('order data returned for seller')]" level="DEBUG"
+			doc:name="log orderId return details" category="${logger.order-backend}" />
+	</flow>
+	
+
+	<flow name="put-order-sellerid-orderid" processingStrategy="synchronous">
 		<logger message="#[logIn('create order backend implementation')]"
 			level="DEBUG" doc:name="Log orderId request Details" category="${logger.order-backend}" />
 		<http:outbound-endpoint exchange-pattern="request-response"
 			host="${etc.host}" port="${etc.port}"
-			path="fl3x/order/#[orderId]?op_type=create"
+			path="fl3x/#[sellerId]/#[orderId]?op_type=create"
 			connector-ref="http-conn-shared" method="PUT" doc:name="elasticsearch_api"
 			contentType="application/json" keepAlive="true" password="${etc.password}"
-			user="${etc.username}"/>
-			
+			user="${etc.username}">	
+		</http:outbound-endpoint>
+		
 		<logger message="#[logOut('order data returned')]" level="DEBUG"
 			doc:name="log orderId return details" category="${logger.order-backend}" />
 	</flow>
+	
 
 </mule>

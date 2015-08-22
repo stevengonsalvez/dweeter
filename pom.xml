@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fl3x.mule.app</groupId>
 	<artifactId>order-api</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>mule</packaging>
-	<name>Mule messaging-services-dashboard-service Application</name>
+	<name>flex order hub</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,32 +14,23 @@
 
 		<!-- for fl3x: to run on 3.6.1 CE use: -->
 		<mule.version>3.6.1</mule.version>
-		<!-- for fl3x: to run on 3.6.2 EE use:
-		<mule.version>3.6.2</mule.version>
-		-->
+		<!-- for fl3x: to run on 3.6.2 EE use: <mule.version>3.6.2</mule.version> -->
 		<mule.tools.version>1.0</mule.tools.version>
-		
-		
-		<!--  fl3x deployment specific properties  -->
-		<!--  some of the properties will be overriden in the jenkins configuration for this job  , or could be overriden in the settings.xml -->
+
+
+		<!-- fl3x deployment specific properties -->
+		<!-- some of the properties will be overriden in the jenkins configuration 
+			for this job , or could be overriden in the settings.xml -->
 		<skip.deploy.nexus>false</skip.deploy.nexus>
 		<skip.soapui.test>true</skip.soapui.test>
 		<skip.deploy.ciserver>false</skip.deploy.ciserver>
 
 		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml</soapui.projectFile>
 		<soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
-		<soapui.endpoint.username></soapui.endpoint.username>
-		<soapui.endpoint.password></soapui.endpoint.password>
+		<soapui.endpoint.username/>
+		<soapui.endpoint.password/>
 
-		<mmc.app.dir>${project.basedir}/src/main/app</mmc.app.dir>
-		
-		<!--  definitely override these properties in either settings.xml or in the jenkins configuration -->
-		<mmc.url>http://localhost:8585/mmc/api</mmc.url>
-		<mmc.clusterName>dev</mmc.clusterName>
-		<mmc.username>admin</mmc.username>
-		<mmc.password>admin</mmc.password>
-		<mmc.deploy.domain>dev</mmc.deploy.domain>
-		
+
 	</properties>
 
 	<build>
@@ -96,57 +86,21 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--Install clover-plugins-->
-			<!-- for fl3x: don't need clover:
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>copy-clover-plugins</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<stripVersion>true</stripVersion>
-
-							<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.cloveretl</groupId>
-									<artifactId>cloveretl-engine</artifactId>
-									<version>${mule.version}</version>
-									<type>zip</type>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<configuration>
-							<tasks>
-                                <!- Using an ant task to deflate cloveretl-engine.zip ->
-								<unzip dest="${project.build.testOutputDirectory}" src="${project.build.testOutputDirectory}/cloveretl-engine.zip" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
+			<!--Install clover-plugins -->
+			<!-- for fl3x: don't need clover: <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-dependency-plugin</artifactId> <version>2.4</version> <executions> 
+				<execution> <id>copy-clover-plugins</id> <phase>validate</phase> <goals> 
+				<goal>copy</goal> </goals> <configuration> <overWriteReleases>true</overWriteReleases> 
+				<overWriteSnapshots>true</overWriteSnapshots> <overWriteIfNewer>true</overWriteIfNewer> 
+				<stripVersion>true</stripVersion> <outputDirectory>${project.build.testOutputDirectory}</outputDirectory> 
+				<artifactItems> <artifactItem> <groupId>com.cloveretl</groupId> <artifactId>cloveretl-engine</artifactId> 
+				<version>${mule.version}</version> <type>zip</type> </artifactItem> </artifactItems> 
+				</configuration> </execution> </executions> </plugin> <plugin> <artifactId>maven-antrun-plugin</artifactId> 
+				<version>1.7</version> <executions> <execution> <phase>compile</phase> <configuration> 
+				<tasks> <!- Using an ant task to deflate cloveretl-engine.zip -> <unzip dest="${project.build.testOutputDirectory}" 
+				src="${project.build.testOutputDirectory}/cloveretl-engine.zip" /> </tasks> 
+				</configuration> <goals> <goal>run</goal> </goals> </execution> </executions> 
+				</plugin> -->
 			<!-- for fl3x: to compile Java 1.7 source -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -157,7 +111,8 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- for fl3x: add the bundled proprietary (non-Maven repo) jars to the app zip -->
+			<!-- for fl3x: add the bundled proprietary (non-Maven repo) jars to the 
+				app zip -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -168,7 +123,7 @@
 						<configuration>
 							<tasks>
 								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
-									<zipfileset dir="${project.basedir}/lib" prefix="lib" />
+									<zipfileset dir="${project.basedir}/lib" prefix="lib"/>
 								</zip>
 							</tasks>
 						</configuration>
@@ -176,40 +131,46 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-			<!--  added for fl3x to deploy using the REST plugin -->
-			<plugin>
-				<groupId>org.mule.tools</groupId>
-				<artifactId>mule-mmc-rest-plugin</artifactId>
-				<version>1.3.4</version>
-				<executions>
 					<execution>
 						<id>mule-deploy</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>deploy</goal>
+							<goal>run</goal>
 						</goals>
 						<configuration>
-							<goalPrefix>mule-mmc-rest</goalPrefix>
-							<muleApiUrl>${mmc.url}</muleApiUrl>
-							<name>${project.artifactId}</name>
-							<username>${mmc.username}</username>
-							<password>${mmc.password}</password>
-							<appDirectory>${project.basedir}/src/main/app</appDirectory>
-							<finalName>${project.artifactId}-${project.version}</finalName>
-							<version>${project.version}</version>
-							<domain>${mmc.deploy.domain}</domain>
-							<serverGroup>${mmc.serverGroup}</serverGroup>
-							<fileNamePattern>regex:^.*mule-config.xml$</fileNamePattern>
-							<propToReplace>fl3x.env.deploytime</propToReplace>
-							<clusterName>${mmc.clusterName}</clusterName>
-							<skip>${skip.deploy.ciserver}</skip>
+							<tasks>
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="vagrant:vagrant@172.28.128.3:/tmp" trust="true">
+								</scp>
+							</tasks>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.42</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-			<!--  plugin added for soap ui testing -->
+			<!-- added for fl3x to deploy using the REST plugin -->
+			<!-- <plugin> <groupId>org.mule.tools</groupId> <artifactId>mule-mmc-rest-plugin</artifactId> 
+				<version>1.3.4</version> <executions> <execution> <id>mule-deploy</id> <phase>pre-integration-test</phase> 
+				<goals> <goal>deploy</goal> </goals> <configuration> <goalPrefix>mule-mmc-rest</goalPrefix> 
+				<muleApiUrl>${mmc.url}</muleApiUrl> <name>${project.artifactId}</name> <username>${mmc.username}</username> 
+				<password>${mmc.password}</password> <appDirectory>${project.basedir}/src/main/app</appDirectory> 
+				<finalName>${project.artifactId}-${project.version}</finalName> <version>${project.version}</version> 
+				<domain>${mmc.deploy.domain}</domain> <serverGroup>${mmc.serverGroup}</serverGroup> 
+				<fileNamePattern>regex:^.*mule-config.xml$</fileNamePattern> <propToReplace>fl3x.env.deploytime</propToReplace> 
+				<clusterName>${mmc.clusterName}</clusterName> <skip>${skip.deploy.ciserver}</skip> 
+				</configuration> </execution> </executions> </plugin> -->
+
+			<!-- plugin added for soap ui testing -->
 			<plugin>
 				<groupId>com.github.redfish4ktc.soapui</groupId>
 				<artifactId>maven-soapui-extension-plugin</artifactId>
@@ -237,7 +198,7 @@
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.3.1</version>
 			</plugin>
-			<!--  plugin added for maven release for the artefact -->
+			<!-- plugin added for maven release for the artefact -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -263,14 +224,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- Xml configuration -->
-		<!-- for fl3x: don't need EE-version of Spring but CE version included further below:
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-spring-config-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
+		<!-- for fl3x: don't need EE-version of Spring but CE version included 
+			further below: <dependency> <groupId>com.mulesoft.muleesb.modules</groupId> 
+			<artifactId>mule-module-spring-config-ee</artifactId> <version>${mule.version}</version> 
+			<scope>provided</scope> </dependency> -->
 		<!-- Mule Transports -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
@@ -290,28 +247,18 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- for fl3x: don't need EE-version of JDBC but CE version included immediately above:
-		<dependency>
-			<groupId>com.mulesoft.muleesb.transports</groupId>
-			<artifactId>mule-transport-jdbc-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
+		<!-- for fl3x: don't need EE-version of JDBC but CE version included immediately 
+			above: <dependency> <groupId>com.mulesoft.muleesb.transports</groupId> <artifactId>mule-transport-jdbc-ee</artifactId> 
+			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-jms</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- for fl3x: don't need EE-version of JMS but CE version included immediately above:
-		<dependency>
-			<groupId>com.mulesoft.muleesb.transports</groupId>
-			<artifactId>mule-transport-jms-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
+		<!-- for fl3x: don't need EE-version of JMS but CE version included immediately 
+			above: <dependency> <groupId>com.mulesoft.muleesb.transports</groupId> <artifactId>mule-transport-jms-ee</artifactId> 
+			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-vm</artifactId>
@@ -338,14 +285,9 @@
 			<version>${mule.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- for fl3x: don't need clover:
-		<dependency>
-			<groupId>com.cloveretl</groupId>
-			<artifactId>cloveretl-engine</artifactId>
-			<version>${mule.version}</version>
-			<scope>test</scope>
-		</dependency>
-		-->
+		<!-- for fl3x: don't need clover: <dependency> <groupId>com.cloveretl</groupId> 
+			<artifactId>cloveretl-engine</artifactId> <version>${mule.version}</version> 
+			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-apikit</artifactId>
@@ -364,14 +306,16 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- for fl3x from here -->
-		<!-- depend on a version of commons-lang that's available both in 3.6.1 CE and 3.6.2 EE: -->
+		<!-- depend on a version of commons-lang that's available both in 3.6.1 
+			CE and 3.6.2 EE: -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- depend on a version of commons-io that's compatible wtih both in 3.6.1 CE and 3.6.2 EE: -->
+		<!-- depend on a version of commons-io that's compatible wtih both in 3.6.1 
+			CE and 3.6.2 EE: -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -434,7 +378,24 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/com.ibm.mq.headers.jar</systemPath>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.1</version>
+		</dependency>
+	<dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-json</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>
@@ -492,7 +453,7 @@
 			<layout>default</layout>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>

@@ -4,6 +4,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="language" type="xs:string" minOccurs="0"/>
+				<xs:element name="channel" type="xs:string" minOccurs="0"/>
 				<xs:element name="merchant" minOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
@@ -46,7 +47,7 @@
 						<xs:sequence>
 							<xs:element name="type" type="xs:string" minOccurs="0"/>
 							<xs:element name="orderId" type="xs:string"/>
-							<xs:element name="orderDate" type="xs:dateTime"/>
+							<xs:element name="orderDate" type="xs:date"/>
 							<xs:element name="userSourceData" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
@@ -69,6 +70,7 @@
 										<xs:element name="currency" type="xs:string" default="GBP" minOccurs="1"/>
 										<xs:element name="netPrice" type="xs:decimal" minOccurs="1"/>
 										<xs:element name="grossPrice" type="xs:decimal" minOccurs="0"/>
+										<xs:element name="effectivePrice" type="xs:decimal" minOccurs="0"/>
 										<xs:element name="specialPackageCharge" type="xs:decimal" minOccurs="0"/>
 										<xs:element name="adjustment" type="xs:decimal" minOccurs="0"/>
 										<xs:element name="salesTax" type="xs:decimal" minOccurs="0"/>
@@ -111,6 +113,8 @@
 													<xs:element name="title" type="xs:string" minOccurs="1"/>
 													<xs:element name="firstName" type="xs:string" minOccurs="1"/>
 													<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+													<xs:element name="company" type="xs:string" minOccurs="0"/>
+													<xs:element name="division" type="xs:string" minOccurs="0"/>
 													<xs:element name="addressLine1" type="xs:string" minOccurs="1"/>
 													<xs:element name="addressLine2" type="xs:string" minOccurs="0"/>
 													<xs:element name="addressLine3" type="xs:string" minOccurs="0"/>
@@ -120,7 +124,7 @@
 													<xs:element name="postcode" type="xs:string" minOccurs="1"/>
 													<xs:element name="fax" type="xs:string" minOccurs="0"/>
 													<xs:element name="email" type="xs:string" minOccurs="0"/>
-													<xs:element name="phone" type="xs:int" minOccurs="0"/>
+													<xs:element name="phone" type="xs:string" minOccurs="0"/>
 													<xs:element name="mob" type="xs:int" minOccurs="0"/>
 												</xs:sequence>
 											</xs:complexType>
@@ -199,6 +203,8 @@
 													<xs:element name="title" type="xs:string" minOccurs="0"/>
 													<xs:element name="firstName" type="xs:string" minOccurs="1"/>
 													<xs:element name="lastName" type="xs:string" minOccurs="1"/>
+													<xs:element name="company" type="xs:string" minOccurs="0"/>
+													<xs:element name="division" type="xs:string" minOccurs="0"/>
 													<xs:element name="addressLine1" type="xs:string" minOccurs="0"/>
 													<xs:element name="addressLine2" type="xs:string" minOccurs="0"/>
 													<xs:element name="addressLine3" type="xs:string" minOccurs="0"/>
@@ -208,7 +214,7 @@
 													<xs:element name="postcode" type="xs:string" minOccurs="0"/>
 													<xs:element name="fax" type="xs:string" minOccurs="0"/>
 													<xs:element name="email" type="xs:string" minOccurs="0"/>
-													<xs:element name="phone" type="xs:int" minOccurs="0"/>
+													<xs:element name="phone" type="xs:string" minOccurs="0"/>
 													<xs:element name="mob" type="xs:int" minOccurs="0"/>
 												</xs:sequence>
 											</xs:complexType>
@@ -228,7 +234,7 @@
 										<xs:element name="type" type="xs:string" minOccurs="0"/>
 										<xs:element name="lineId" type="xs:int" minOccurs="1"/>
 										<xs:element name="sku" type="xs:string" minOccurs="1"/>
-										<xs:element name="alternateItemId" type="xs:int" minOccurs="0" nillable="true"/>
+										<xs:element name="alternateItemId" type="xs:int" nillable="true" minOccurs="0"/>
 										<xs:element name="itemName" type="xs:string" minOccurs="0"/>
 										<xs:element name="itemDescription" type="xs:string" minOccurs="0"/>
 										<xs:element name="itemUrl" type="xs:anyURI" minOccurs="0"/>
@@ -237,7 +243,7 @@
 										<xs:element name="discount" type="xs:decimal" minOccurs="0"/>
 										<xs:element name="tax" type="xs:decimal" minOccurs="0"/>
 										<xs:element name="currency" type="xs:string" minOccurs="0"/>
-										<xs:element name="quantity" type="xs:int" minOccurs="1"/>
+										<xs:element name="quantity" type="xs:decimal" minOccurs="1"/>
 										<xs:element name="itemStatus" minOccurs="0" maxOccurs="1">
 											<xs:complexType>
 												<xs:sequence>

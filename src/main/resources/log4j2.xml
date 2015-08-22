@@ -1,39 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
+
 	<Appenders>
-		<Console name="console" target="SYSTEM_OUT">
+	
+		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%-5p %d [%t] %c: %m%n" />
 		</Console>
+			
+		<RollingFile name="FileLog" fileName="${sys:mule.home}/logs/flex-order-hub.log"
+			filePattern="${sys:mule.home}/logs/flex-y5p-client-%i.log">
+			<PatternLayout>
+			  <Pattern>%-5p %d %t [%c] %x: %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+  				<SizeBasedTriggeringPolicy size="20 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+
+ 		<RollingFile name="AlertsLog" fileName="${sys:mule.home}/logs/flex-order-hub.log"
+ 			filePattern="${sys:mule.home}/logs/flex-y5p-client-%i.log">
+			<PatternLayout>
+			  <Pattern>%-5p %d %t [%c] %x: %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+  				<SizeBasedTriggeringPolicy size="20 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+		
+		<Syslog name="SysLog" format="RFC5424" host="localhost" port="514"
+            protocol="UDP" appName="flex-order-hub" mdcId="mdc" includeMDC="true"
+            facility="local1" newLine="true" messageId="Alert" id="flex-order-hub" />
+    	
 	</Appenders>
+
 	<Loggers>
-		<Root level="info">
-			<AppenderRef ref="console" />
-		</Root>
-
-		<Logger name="com" level="debug" />
-		<Logger name="com.gigaspaces" level="error" />
-		<Logger name="com.j_spaces" level="error" />
-		<Logger name="com.marksandspencer" level="debug" />
-		<Logger name="com.mulesoft" level="info" />
-		<Logger name="com.mulesoft.services" level="debug" />
-		<Logger name="com.ning.http" level="warn" />
-		<Logger name="com.opensys.cloveretl" level="warn" />
-		<Logger name="com.sun.jini" level="error" />
-		<Logger name="httpclient" level="info" />
-		<Logger name="net.jini" level="error" />
-		<Logger name="org.apache" level="warn" />
-		<Logger name="org.apache.cxf" level="warn" />
-		<Logger name="org.jetel" level="warn" />
-		<Logger name="org.mortbay.jetty" level="info" />
-		<Logger name="org.mule" level="info" />
-		<Logger name="org.mule.api.processor.LoggerMessageProcessor" level="debug" />
-		<Logger name="org.mule.lifecycle.AbstractLifecycleManager" level="warn" />
-		<Logger name="org.mule.transformer.simple.AddFlowVariableTransformer" level="warn" />
-		<Logger name="org.mule.transformer.simple.AddPropertyTransformer" level="warn" />
-		<Logger name="org.springframework" level="info" />
-		<Logger name="org.springframework.beans.factory" level="warn" />
-		<Logger name="org.springframework.context" level="debug" />
-		<Logger name="Tracking" level="info" />
-
+		<AsyncLogger name="com" level="debug" />
+		<AsyncLogger name="com.gigaspaces" level="error" />
+		<AsyncLogger name="com.j_spaces" level="error" />
+		<AsyncLogger name="com.fl3x" level="debug" />
+		<AsyncLogger name="com.mulesoft" level="info" />
+		<AsyncLogger name="com.mulesoft.services" level="debug" />
+		<AsyncLogger name="com.ning.http" level="warn" />
+		<AsyncLogger name="com.opensys.cloveretl" level="warn" />
+		<AsyncLogger name="com.sun.jini" level="error" />
+		<AsyncLogger name="httpclient" level="info" />
+		<AsyncLogger name="net.jini" level="error" />
+		<AsyncLogger name="org.apache" level="warn" />
+		<AsyncLogger name="org.apache.cxf" level="warn" />
+		<AsyncLogger name="org.jetel" level="warn" />
+		<AsyncLogger name="org.mortbay.jetty" level="info" />
+		<AsyncLogger name="org.mule" level="info" />
+		<AsyncLogger name="org.mule.api.processor.AsyncLoggerMessageProcessor" level="debug" />
+		<AsyncLogger name="org.mule.lifecycle.AbstractLifecycleManager" level="warn" />
+		<AsyncLogger name="org.mule.transformer.simple.AddFlowVariableTransformer" level="warn" />
+		<AsyncLogger name="org.mule.transformer.simple.AddPropertyTransformer" level="warn" />
+		<AsyncLogger name="org.springframework" level="info" />
+		<AsyncLogger name="org.springframework.beans.factory" level="warn" />
+		<AsyncLogger name="org.springframework.context" level="debug" />
+		<AsyncLogger name="Tracking" level="info" />
+		
+		<AsyncRoot level="TRACE">
+			<AppenderRef ref="Console" level="${sys:log.threshold.console}" />
+			<AppenderRef ref="FileLog" level="${sys:log.threshold.filelog}"/>
+			<AppenderRef ref="AlertsLog" level="ERROR" />
+			<AppenderRef ref="SysLog" level="ERROR" />
+		</AsyncRoot>
 	</Loggers>
 </Configuration>

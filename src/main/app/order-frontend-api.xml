@@ -16,9 +16,6 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<global-property name="logger.order-api"
 		value="com.fl3x.mule.configfile.order-api" doc:name="Logger" />
 
-	
-	
-
 	<apikit:config name="order-api-config" raml="order-api.raml" consoleEnabled="false" doc:name="Router" />
 
 	<apikit:mapping-exception-strategy
@@ -102,6 +99,59 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	</apikit:mapping-exception-strategy>
 	
 	
+	<!-- an exception strategy that can be used for all RESTful APIs that return JSON payloads -->
+	<apikit:mapping-exception-strategy name="default-exc-strategy-api-json" >
+		<apikit:mapping statusCode="400">
+			<apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+			<logger message="#[logExc('Bad request')]" level="INFO" category="${logger.common-mule-config}" doc:name="Bad request" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Bad request: #[exception.causeException.message]&quot; }" doc:name="Bad request" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="401">
+			<apikit:exception value="org.mule.api.security.UnauthorisedException" />
+			<logger message="#[logExc('Unauthorized')]" level="WARN" category="${logger.common-mule-config}" doc:name="Unauthorized" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Unauthorized&quot; }" doc:name="Unauthorized" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="404">
+			<apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+			<logger message="#[logExc('Resource not found')]" level="INFO" category="${logger.common-mule-config}" doc:name="Resource not found" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Resource not found" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="405">
+			<apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+			<logger message="#[logExc('Method not allowed')]" level="INFO" category="${logger.common-mule-config}" doc:name="Method not allowed" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Method not allowed" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="406">
+			<apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+			<logger message="#[logExc('Not acceptable')]" level="INFO" category="${logger.common-mule-config}" doc:name="Not acceptable" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Not acceptable" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="415">
+			<apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+			<logger message="#[logExc('Unsupported media type')]" level="INFO" category="${logger.common-mule-config}" doc:name="Unsupported media type" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Unsupported media type" />
+			
+		</apikit:mapping>
+		<apikit:mapping statusCode="500">
+			<apikit:exception value="java.lang.Exception" />
+			<logger message="#[logExc('Internal processing error')]" level="ERROR" category="${logger.common-mule-config}" doc:name="Internal processing error" />
+			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
+			<set-payload value="{ &quot;message&quot;: &quot;Internal processing error&quot; }" doc:name="Internal processing error" />
+		</apikit:mapping>
+	</apikit:mapping-exception-strategy>
+	
+	
 	<flow name="order-api-console">
 		<inbound-endpoint ref="order-api-console-ep" doc:name="http-order"/>
 		<apikit:console config-ref="order-api-config"
@@ -113,33 +163,64 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
         <set-session-variable variableName="test" value="123" doc:name="Session Variable"/>
 		<apikit:router config-ref="order-api-config" doc:name="APIkit Router" />
         <response>
-            <logger message="logging final outbound payload #[payload]" level="INFO" doc:name="Logger"/>
+            <logger message="logging final outbound payload #[payload]" level="INFO" category="${logger.order-api}" doc:name="logger"/>
         </response>
-		<exception-strategy ref="default-exc-strategy-api-xml"
+		<exception-strategy ref="default-exc-strategy-api-json"
 			doc:name="Reference Exception Strategy" />
 	</flow>
+	
+	<flow name="get:/orders:order-api-config"
+		processingStrategy="synchronous">
+		<logger
+			message="#[logIn('entering into invocation of orders bulk retrieve')]"
+			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+        <expression-component doc:name="Expression"><![CDATA[sessionVars.sellerId= message.inboundProperties.'http.query.params'.seller;
+sessionVars.fromDate=message.inboundProperties.'http.query.params'.fromDate;
+sessionVars.toDate=message.inboundProperties.'http.query.params'.toDate;
+sessionVars.status=message.inboundProperties.'http.query.params'.status;
+sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></expression-component>
+			
+        <flow-ref name="get-orders-seller" doc:name="get-orders-seller"/>
+       <logger message="#[logOut('exiting the invocation of orderId')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
+        <choice doc:name="Choice">
+            <when expression="#[sessionVars.format == 'xml' ]">
+                <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                <logger message="Response sent in XML format" level="DEBUG" category="${logger.order-api}" doc:name="Logger"/>
+            </when>
+            <otherwise>
+                <logger message="sending the response as JSON" level="DEBUG" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+        <logger message="#[logOut('Response sent out for Order Extract')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
+	</flow>
 
-	<flow name="get:/orders/{orderId}:order-api-config"
+
+
+	<flow name="get:/orders/{sellerId}/{orderId}:order-api-config"
 		processingStrategy="synchronous">
 		<logger
 			message="#[logIn('entering into invocation of orderId')]"
-			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+			level="INFO" doc:name="Log inbound" category="${logger.order-api}" />
+        <expression-component doc:name="Expression"><![CDATA[sessionVars.format=message.inboundProperties.'http.query.params'.format]]></expression-component>
 			<logger
 			message="value of orderID ****** is #[orderId]"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
-        <flow-ref name="get-order-orderid" doc:name="get-order-orderid"/>
+        <flow-ref name="get-order-sellerid-orderid" doc:name="get-order-orderid"/>
        <logger message="#[logOut('exiting the invocation of orderId')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
 	</flow>
 	
-	<flow name="put:/orders/{orderId}:order-api-config"
+	
+	
+	
+	<flow name="put:/orders/{sellerId}/{orderId}:order-api-config"
 		processingStrategy="synchronous">
 		<logger
 			message="#[logIn('entering into creation of Order in the Hub')]"
-			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+			level="INFO" doc:name="Log inbound" category="${logger.order-api}" />
 			<logger
-			message="value of orderID ****** is #[orderId]"
+			message="**********value of orderID is #[orderId] and the value of sellerID is #[sellerId]***********"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
-        <flow-ref name="put-order-orderid" doc:name="get-order-orderid"/>
+        <flow-ref name="put-order-sellerid-orderid" doc:name="put-order-orderid"/>
         <logger message="#[logOut('exiting creation of order')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
 	</flow>
 

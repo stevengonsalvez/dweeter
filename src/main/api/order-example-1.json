@@ -1,6 +1,7 @@
 {
   "orderData": {
     "language": "en_GB",
+	"channel":"web",
     "merchant": {
       "type": "organisation",
       "name": "Amazon.com",
@@ -23,19 +24,20 @@
     "orderHeader": {
       "type": "wholesale",
       "orderId": "123-4567890-1234567",
-      "orderDate": "2014-07-02T06:00:00",
+      "orderDate": "2014-07-02",
       "userSourceData": {
         "device": "mobile",
         "ipAddress": "172.89.77.23"
       },
       "giftDetails": {
-        "orderIsGift": "true",
+        "orderIsGift": true,
         "GiftMessage": "this is a test gift message to be stored"
       },
       "charges": {
         "currency": "GBP",
         "netPrice": "29.99",
         "grossPrice": "39.99",
+		"effectivePrice":"29.99",
         "specialPackageCharge": "0",
         "adjustment": "10",
         "salesTax": "0",
@@ -64,6 +66,8 @@
           "title": "Mr",
           "firstName": "steven",
           "lastName": "gonsalvez",
+		  "company" : "fl3x.io",
+		  "division" : "integration",
           "addressLine1": "608, Cardinal Building",
           "addressLine2": "Station Approach",
           "addressLine3": "Hayes",
