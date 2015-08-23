@@ -139,8 +139,10 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="sgonsalvez:metal123@52.4.200.89:/tmp" trust="true">
-								</scp>
+								<sshexec host="52.4.200.89" failonerror="true" username="mule" password="mule" command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* "/>
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@52.4.200.89:/tmp" trust="true"></scp>
+								<sshexec host="52.4.200.89" failonerror="true" username="mule" password="mule" command="cp /tmp/order-api* /opt/mule/apps"/>
+								
 							</tasks>
 						</configuration>
 					</execution>
