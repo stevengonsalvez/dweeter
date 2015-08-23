@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 		<!-- <db:select config-ref="MySQL_Configuration" doc:name="Database">
 			<db:parameterized-query><![CDATA[select * from order_address]]></db:parameterized-query>
 		</db:select> -->
-		<http:request config-ref="elastic_http_request_config" path="/fl3x/#[sellerId]/#[orderId]/_source" method="GET" doc:name="HTTP">
+		<http:request config-ref="elastic_http_request_config" path="/fl3x/#[sellerId]/#[orderId]/_source" method="GET" doc:name="get-order-sellerid-orderid">
 		
 		</http:request>
 
@@ -56,22 +56,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 		</http:request>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
         <scripting:transformer doc:name="Groovy">
-            <scripting:script engine="Groovy"><![CDATA[import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-
-def slurper = new JsonSlurper()
-
-def jsonMap= slurper.parseText(payload)
-
-def aggregateOrders = jsonMap.hits.hits
-
-def testOut = []
-aggregateOrders.eachWithIndex{ item , index -> 
-								println index 
-								testOut.add(item._source)
-								}
-
-payload = JsonOutput.toJson(testOut)]]></scripting:script>
+            <scripting:script engine="Groovy" file="./groovy/extractOrderDatafromElastic.groovy"></scripting:script>
         </scripting:transformer>
         <set-payload value="{&quot;orderExtract&quot;: {&quot;order&quot;:#[payload]}}" doc:name="Set Payload"/>
 

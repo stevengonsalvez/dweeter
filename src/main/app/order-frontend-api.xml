@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:core="http://www.mulesoft.org/schema/mule/core"
+<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:core="http://www.mulesoft.org/schema/mule/core"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
@@ -10,7 +10,8 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd"
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd"
 	version="CE-3.6.1">
 
 	<global-property name="logger.order-api"
@@ -152,6 +153,12 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	</apikit:mapping-exception-strategy>
 	
 	
+	
+	
+	
+	
+	
+	
 	<flow name="order-api-console">
 		<inbound-endpoint ref="order-api-console-ep" doc:name="http-order"/>
 		<apikit:console config-ref="order-api-config"
@@ -185,9 +192,19 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
         <choice doc:name="Choice">
             <when expression="#[sessionVars.format == 'xml' ]">
                 <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                
+                 <mulexml:xslt-transformer xsl-file="./xslt/prettyPrint.xslt" outputEncoding="UTF-8" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
+                    <add-message-property key="Content-Type" value="application/xml"/>
+                </message-properties-transformer>
+                
                 <logger message="Response sent in XML format" level="DEBUG" category="${logger.order-api}" doc:name="Logger"/>
             </when>
             <otherwise>
+            	<message-properties-transformer mimeType="application/json" doc:name="Message Properties">
+                    <add-message-property key="Content-Type" value="application/json"/>
+                </message-properties-transformer>
                 <logger message="sending the response as JSON" level="DEBUG" doc:name="Logger"/>
             </otherwise>
         </choice>
@@ -206,6 +223,24 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
 			message="value of orderID ****** is #[orderId]"
 			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
         <flow-ref name="get-order-sellerid-orderid" doc:name="get-order-orderid"/>
+         <choice doc:name="Choice">
+            <when expression="#[sessionVars.format == 'xml' ]">
+                <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                <mulexml:xslt-transformer xsl-file="./xslt/prettyPrint.xslt" outputEncoding="UTF-8" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
+                    <add-message-property key="Content-Type" value="application/xml"/>
+                </message-properties-transformer>
+                <logger message="Response sent in XML format" level="DEBUG" category="${logger.order-api}" doc:name="Logger"/>
+            </when>
+            <otherwise>
+            	<message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
+                    <add-message-property key="Content-Type" value="application/xml"/>
+                </message-properties-transformer>	
+                <logger message="sending the response as JSON" level="DEBUG" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+        
        <logger message="#[logOut('exiting the invocation of orderId')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
 	</flow>
 	

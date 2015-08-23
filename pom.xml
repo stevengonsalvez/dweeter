@@ -139,7 +139,7 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="vagrant:vagrant@172.28.128.3:/tmp" trust="true">
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="sgonsalvez:metal123@52.4.200.89:/tmp" trust="true">
 								</scp>
 							</tasks>
 						</configuration>

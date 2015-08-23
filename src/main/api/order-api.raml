@@ -65,6 +65,7 @@ traits: !include common-traits.yaml
       200:
         body:
           application/json:
+          application/xml:
   post:
       description: This method will be used to bulk upload order information into the order hub.
         **Note** Always use the PUT method for a single order since the PUT method is idempotent 
@@ -93,11 +94,6 @@ traits: !include common-traits.yaml
       description: Retrieve an order.
       is: [ with-common-error-responses-json, with-common-error-responses-xml]
       queryParameters:
-        seller:
-          description: Filter orders by based on seller
-          type: string
-          example: "Y5P"
-          required: true
         format:
           description: specify the format the data is required in example {application/xml}
             **Note** this is just an alternative to specifying Accept headers - if format and Accept are not specified then
@@ -109,8 +105,8 @@ traits: !include common-traits.yaml
       responses:
         200:
           body:
-            text/plain:
             application/json:
+            text/plain:
             application/xml:
     put:
       description: Create an Order in the Order Hub.
