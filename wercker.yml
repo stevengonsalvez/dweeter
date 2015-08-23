@@ -1,4 +1,4 @@
-box: mihkels/java8-oracle
+box: maven:latest
 build:
   steps:
     - xenoterracide/maven:
