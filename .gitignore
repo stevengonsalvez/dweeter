@@ -50,7 +50,7 @@ target/
 
 .DS_Store
 /dev_jco_rfc.trc
-/LandedCostPriceSecureTestSuite-LandedCostPriceBackendMockTestCase-REST_Test_Request-0-FAILED.txt
+/*-0-FAILED.txt
 /landedCostPriceTestSuite-LandedCostPriceBackendMockTestCase-REST_Test_Request-0-FAILED.txt
 /soapui.log
 /soapui-errors.log
