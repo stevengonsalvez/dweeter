@@ -219,12 +219,12 @@
 	<!-- Mule Dependencies -->
 	<dependencies>
 		<!-- Xml configuration -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.mulesoft.muleesb</groupId>
 			<artifactId>mule-core-ee</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>-->
 		<!-- Xml configuration -->
 		<!-- for fl3x: don't need EE-version of Spring but CE version included 
 			further below: <dependency> <groupId>com.mulesoft.muleesb.modules</groupId> 
