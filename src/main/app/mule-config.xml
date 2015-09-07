@@ -96,11 +96,10 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 	
 	<http:endpoint name="order-api-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.ep.path}"
 		keepAlive="true" connector-ref="http-conn-shared" doc:name="order API HTTP endpoint">
-		<mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" />
+		<!-- <mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" /> -->
 	</http:endpoint>
 	<http:endpoint name="order-api-console-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.console.ep.path}"
 		keepAlive="true" connector-ref="http-conn-shared" doc:name=" API console HTTP endpoint">
-		<mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" />
 	</http:endpoint>
 	
 </mule>
