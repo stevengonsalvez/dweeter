@@ -63,6 +63,8 @@ traits: !include common-traits.yaml
           required: false
     responses:
       200:
+        headers:
+          Access-Control-Allow-Origin:
         body:
           application/json:
           application/xml:
@@ -76,6 +78,8 @@ traits: !include common-traits.yaml
         application/json:
       responses:
         200:
+          headers:
+            Access-Control-Allow-Origin:
           body:
             application/json:
   /{sellerId}/{orderId}:
@@ -104,6 +108,8 @@ traits: !include common-traits.yaml
           required: false
       responses:
         200:
+          headers:
+            Access-Control-Allow-Origin:
           body:
             application/json:
             application/xml:
@@ -117,6 +123,8 @@ traits: !include common-traits.yaml
         application/xml:
       responses:
         200:
+          headers:
+             Access-Control-Allow-Origin:
           body:
             applicaton/json:
             application/xml:
@@ -139,6 +147,8 @@ traits: !include common-traits.yaml
             required: false
         responses:
           200:
+            headers:
+              Access-Control-Allow-Origin:
             body:
               application/json:
       patch:
@@ -185,6 +195,8 @@ traits: !include common-traits.yaml
           required: false
       responses:
         200:
+          headers:
+              Access-Control-Allow-Origin:
           body:
             application/json:
             application/xml:

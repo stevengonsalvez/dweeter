@@ -139,9 +139,9 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<sshexec host="52.4.200.89" trust="true" failonerror="true" username="mule" password="mule" command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* "/>
-								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@52.4.200.89:/tmp" trust="true"></scp>
-								<sshexec host="52.4.200.89" failonerror="true" username="mule" password="mule" command="cp /tmp/order-api* /opt/mule/apps"/>
+								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com" trust="true" failonerror="true" username="mule" password="mule" command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* "/>
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@ec2-52-1-199-16.compute-1.amazonaws.com:/tmp" trust="true"></scp>
+								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com" failonerror="true" username="mule" password="mule" command="cp /tmp/order-api* /opt/mule/apps"/>
 								
 							</tasks>
 						</configuration>

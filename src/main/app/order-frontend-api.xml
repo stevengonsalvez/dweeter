@@ -197,6 +197,7 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
                 <byte-array-to-string-transformer doc:name="Byte Array to String"/>
                 <message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
                     <add-message-property key="Content-Type" value="application/xml"/>
+                    <add-message-property key="Access-Control-Allow-Origin" value="*"/>
                 </message-properties-transformer>
                 
                 <logger message="Response sent in XML format" level="DEBUG" category="${logger.order-api}" doc:name="Logger"/>
@@ -204,6 +205,7 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
             <otherwise>
             	<message-properties-transformer mimeType="application/json" doc:name="Message Properties">
                     <add-message-property key="Content-Type" value="application/json"/>
+                    <add-message-property key="Access-Control-Allow-Origin" value="*"/>
                 </message-properties-transformer>
                 <logger message="sending the response as JSON" level="DEBUG" doc:name="Logger"/>
             </otherwise>
@@ -230,12 +232,14 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
                 <byte-array-to-string-transformer doc:name="Byte Array to String"/>
                 <message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
                     <add-message-property key="Content-Type" value="application/xml"/>
+                    <add-message-property key="Access-Control-Allow-Origin" value="*"/>
                 </message-properties-transformer>
                 <logger message="Response sent in XML format" level="DEBUG" category="${logger.order-api}" doc:name="Logger"/>
             </when>
             <otherwise>
-            	<message-properties-transformer mimeType="application/xml" doc:name="Message Properties">
+            	<message-properties-transformer mimeType="application/json" doc:name="Message Properties">
                     <add-message-property key="Content-Type" value="application/xml"/>
+                    <add-message-property key="Access-Control-Allow-Origin" value="*"/>
                 </message-properties-transformer>	
                 <logger message="sending the response as JSON" level="DEBUG" doc:name="Logger"/>
             </otherwise>

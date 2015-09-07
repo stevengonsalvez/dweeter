@@ -16,3 +16,12 @@
           required: false
           maxLength: 1000
           example: http://example.com/callback; method="post"; username="opensesame"; password="openup";
+        Access-Control-Allow-Origin?:
+            example: |
+              *
+        Access-Control-Allow-Methods?:
+            example: |
+              GET, POST, DELETE, PATCH, PUT
+        Access-Control-Allow-Headers?:
+            example: |
+              Content-Type, Accept
