@@ -22,6 +22,18 @@ documentation:
       This is the **fl3x order api**
 resourceTypes: !include header-resourcetypes.yaml
 traits: !include common-traits.yaml
+/user/{userId}/token:
+  description: Issue tokens for users for a specific validity period
+  get:
+    description: retrieve a token for a user 
+    is: [with-common-error-responses-json, with-common-error-responses-xml]
+    responses: 
+      200:
+         headers:
+            Access-Control-Allow-Origin:
+         body:
+            application/json:
+            application/xml:
 /orders:
   description: Retrive a collection of orders. **Note** - Will retrieve a collection of orders per seller
   type: fl3x-types
