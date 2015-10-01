@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fl3x.mule.app</groupId>
@@ -27,8 +28,8 @@
 
 		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml</soapui.projectFile>
 		<soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
-		<soapui.endpoint.username/>
-		<soapui.endpoint.password/>
+		<soapui.endpoint.username />
+		<soapui.endpoint.password />
 
 
 	</properties>
@@ -122,8 +123,9 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
-									<zipfileset dir="${project.basedir}/lib" prefix="lib"/>
+								<zip destfile="${project.build.directory}/${project.build.finalName}.zip"
+									update="true">
+									<zipfileset dir="${project.basedir}/lib" prefix="lib" />
 								</zip>
 							</tasks>
 						</configuration>
@@ -140,9 +142,15 @@
 						<configuration>
 							<skip>true</skip>
 							<tasks unless="maven.test.skip">
-								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com" trust="true" failonerror="true" username="mule" password="mule" command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* "/>
-								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@ec2-52-1-199-16.compute-1.amazonaws.com:/tmp" trust="true"></scp>
-								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com" failonerror="true" username="mule" password="mule" command="cp /tmp/order-api* /opt/mule/apps"/>
+								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com"
+									trust="true" failonerror="true" username="mule" password="mule"
+									command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* " />
+								<scp failonerror="true"
+									file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@ec2-52-1-199-16.compute-1.amazonaws.com:/tmp"
+									trust="true"></scp>
+								<sshexec host="ec2-52-1-199-16.compute-1.amazonaws.com"
+									failonerror="true" username="mule" password="mule"
+									command="cp /tmp/order-api* /opt/mule/apps" />
 							</tasks>
 						</configuration>
 					</execution>
@@ -219,12 +227,8 @@
 	<!-- Mule Dependencies -->
 	<dependencies>
 		<!-- Xml configuration -->
-		<!-- <dependency>
-			<groupId>com.mulesoft.muleesb</groupId>
-			<artifactId>mule-core-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
+		<!-- <dependency> <groupId>com.mulesoft.muleesb</groupId> <artifactId>mule-core-ee</artifactId> 
+			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
 		<!-- Xml configuration -->
 		<!-- for fl3x: don't need EE-version of Spring but CE version included 
 			further below: <dependency> <groupId>com.mulesoft.muleesb.modules</groupId> 
@@ -391,13 +395,19 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.1</version>
 		</dependency>
-	<dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-json</artifactId>
-            <version>${mule.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-json</artifactId>
+			<version>${mule.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- for jwt tokens -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.5.1</version>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>

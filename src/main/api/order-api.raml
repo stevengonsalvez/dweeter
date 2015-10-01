@@ -22,11 +22,15 @@ documentation:
       This is the **fl3x order api**
 resourceTypes: !include header-resourcetypes.yaml
 traits: !include common-traits.yaml
-/user/{userId}/token:
-  description: Issue tokens for users for a specific validity period
-  get:
+/token:
+  description: Issue JWT tokens for users for a specific validity period
+  post:
     description: retrieve a token for a user 
     is: [with-common-error-responses-json, with-common-error-responses-xml]
+    body: 
+      application/json:
+        example: !include jwt_example1.json
+        schema: !include jwt.schema.json
     responses: 
       200:
          headers:

@@ -262,6 +262,15 @@ sessionVars.format=message.inboundProperties.'http.query.params'.format;]]></exp
         <flow-ref name="put-order-sellerid-orderid" doc:name="put-order-orderid"/>
         <logger message="#[logOut('exiting creation of order')]" level="INFO" category="${logger.order-api}"  doc:name="logger"/>
 	</flow>
+	
+	<flow name="post:/token:order-api-config"
+		processingStrategy="synchronous">
+		<logger
+			message="#[logIn('entering into creation of token')]"
+			level="DEBUG" doc:name="Log inbound" category="${logger.order-api}" />
+        <flow-ref name="post-token" doc:name="post-token"/>
+        <logger message="#[logOut('exiting creation of token')]" level="DEBUG" category="${logger.order-api}"  doc:name="logger"/>
+	</flow>
 
 
 

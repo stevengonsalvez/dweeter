@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+
+<global-property name="logger.order-token"
+		value="com.fl3x.mule.configfile.order-token" doc:name="Logger" />
+
+
+<flow name="post-token" processingStrategy="synchronous">
+		<logger message="#[logIn('retrieve token')]"
+			level="DEBUG" doc:name="Log orderId request Details" category="${logger.order-token}" />
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+        <!-- <component class="com.fl3x.token.TokenGen" doc:name="Java"/> -->
+        <custom-transformer class="com.fl3x.token.JWTToken" doc:name="Java"/>
+        
+     	
+		<logger message="#[logOut('returned token')]" level="DEBUG"
+			doc:name="log orderId return details" category="${logger.order-token}" />
+	</flow>
+</mule>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:encryption="http://www.mulesoft.org/schema/mule/encryption" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc" xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.6.1"
@@ -11,10 +11,14 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
-http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/encryption http://www.mulesoft.org/schema/mule/encryption/current/mule-encryption.xsd">
 
 	<global-property name="logger.order-backend"
 		value="com.fl3x.mule.configfile.order-backend" doc:name="Logger" />
+   
+    
+    
 	<!-- <db:generic-config name="fl3xdb_conn"
 		url="jdbc:mysql://fl3xdb.cp6lbq4klxrk.us-east-1.rds.amazonaws.com:3306/fl3xdb?user=fl3x&amp;password=metal123&amp;connectTimeout=2000&amp;socketTimeout=2000"
 		driverClassName="com.mysql.jdbc.Driver" doc:name="Generic Database Configuration" />
@@ -92,6 +96,8 @@ return payload
 		<logger message="#[logOut('order data returned')]" level="DEBUG"
 			doc:name="log orderId return details" category="${logger.order-backend}" />
 	</flow>
+	
+	
 	
 
 </mule>
