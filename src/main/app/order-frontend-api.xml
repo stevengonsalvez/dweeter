@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 		value="com.fl3x.mule.configfile.order-api" doc:name="Logger" />
 
 	<apikit:config name="order-api-config" raml="order-api.raml" consoleEnabled="false" doc:name="Router" />
-
+    
 	<apikit:mapping-exception-strategy
 		name="default-exc-strategy-api-xml">
 		<apikit:mapping statusCode="400">

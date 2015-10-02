@@ -8,14 +8,10 @@ baseUriParameters:
     displayName: version
     type: string
     enum: [ "1" ]
-securitySchemes:
-  - basic_auth:
-      description: HTTP Basic Authentication as defined in RFC 2617.
-      type: Basic Authentication
+securitySchemes: !include security.yaml
 schemas: 
   - !include common-schemas-json.yaml
   - !include common-schemas-xml.yaml
-securedBy: [basic_auth]
 documentation:
   - title: FL3X
     content: |
@@ -25,6 +21,7 @@ traits: !include common-traits.yaml
 /token:
   description: Issue JWT tokens for users for a specific validity period
   post:
+    securedBy: [basic_auth]
     description: retrieve a token for a user 
     is: [with-common-error-responses-json, with-common-error-responses-xml]
     body: 
@@ -42,6 +39,7 @@ traits: !include common-traits.yaml
   description: Retrive a collection of orders. **Note** - Will retrieve a collection of orders per seller
   type: fl3x-types
   get:
+    securedBy: [jwt]
     description: Retrieve list of order summaries.
            
       **Note** If no dates are specified , entire list of orders are retrieved 
@@ -85,6 +83,7 @@ traits: !include common-traits.yaml
           application/json:
           application/xml:
   post:
+      securedBy: [jwt]
       description: This method will be used to bulk upload order information into the order hub.
         **Note This Method is Not Implemented Yet and will not be available**
       is: [with-common-error-responses-json, with-common-error-responses-xml, with-nocontent-location-xml, with-nocontent-location-json]
@@ -111,6 +110,7 @@ traits: !include common-traits.yaml
         required: true
     type: fl3x-types
     get:
+      securedBy: [jwt]
       description: Retrieve an order from order hub for a seller.
       is: [ with-common-error-responses-json, with-common-error-responses-xml]
       queryParameters:
@@ -130,6 +130,7 @@ traits: !include common-traits.yaml
             application/json:
             application/xml:
     put:
+      securedBy: [jwt]
       description: Create an Order in the Order Hub for a seller.
         **Note** The response will be in the format of the request content-type
         **Note** The payload will also contain the order ID , the order ID in the location has to be the same - descrepencies are not checked
@@ -148,6 +149,7 @@ traits: !include common-traits.yaml
       description: check the status of an order **Note** - can check the status of an order only by seller
       type: fl3x-types
       get:
+        securedBy: [jwt]
         description: Retrieve an order.
         is: [ with-common-error-responses-json, with-common-error-responses-xml]
         headers:
@@ -168,6 +170,7 @@ traits: !include common-traits.yaml
             body:
               application/json:
       patch:
+        securedBy: [jwt]
         description: Update the order with a new state
         body:
           application/json:
@@ -179,6 +182,7 @@ traits: !include common-traits.yaml
         example: 1888981212
     type: fl3x-types
     get:
+      securedBy: [jwt]  
       description: Retrieve Order History for the customer
       is: [ with-common-error-responses-json, with-common-error-responses-xml]
       headers:

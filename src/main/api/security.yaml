@@ -1,0 +1,24 @@
+- jwt:
+    description: |
+        Authorization with jwt usage header "X-HD-Access-Token" with token
+    type: x-jwt
+    describedBy:
+        headers:
+            Authorization:
+                description: |
+                   Valid jwt token
+                example: |
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+        responses:
+            401:
+              description: |
+                    Bad or expired token.
+            403:
+              description: |
+                  Access denied not valid privilage in resurces
+    settings:
+        requestTokenUri: https://fl3x.io/token
+        
+- basic_auth:
+    description: HTTP Basic Authentication as defined in RFC 2617.
+    type: Basic Authentication
