@@ -7,7 +7,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-		  <maven.test.skip>true<maven.test.skip>
+		  <maven.test.skip>true</maven.test.skip>
 		  <soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
           	<!-- this should always be true as an external network will not have access to nexus -->
           <skip.deploy.nexus>true</skip.deploy.nexus>
