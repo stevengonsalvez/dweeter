@@ -1,4 +1,4 @@
-box: maven:latest
+box: stevengonsalvez/mulece:3.6.1
 build:
   steps:
     - xenoterracide/maven:
