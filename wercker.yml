@@ -1,5 +1,6 @@
 box: maven:latest
 build:
   steps:
-    - xenoterracide/maven:
+    - stevengonsalvez/maven:
         goals: clean install
+        
