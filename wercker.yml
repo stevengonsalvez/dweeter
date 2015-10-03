@@ -1,4 +1,4 @@
-box: stevengonsalvez/mvnmuleelastic:1.1
+box: maven:latest
 build:
   steps:
     - xenoterracide/maven:
