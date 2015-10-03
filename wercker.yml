@@ -1,4 +1,4 @@
-box: stevengonsalvez/mulece:3.6.1
+box: stevengonsalvez/mvnmuleelastic:1.1
 build:
   steps:
     - xenoterracide/maven:
