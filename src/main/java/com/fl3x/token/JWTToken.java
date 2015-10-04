@@ -5,6 +5,7 @@ import java.util.Map;
 
 
 
+
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.transformer.AbstractMessageTransformer;
@@ -26,6 +27,7 @@ public class JWTToken extends AbstractMessageTransformer {
 	public Object transformMessage(MuleMessage message, String outputEncoding)
 			throws TransformerException {
 		
+		@SuppressWarnings("unchecked")
 		Map<String,Object> TokenInPayload = (Map<String,Object>)message.getPayload();
 		
 		Map<String,String> TokenOutPayload = new HashMap<String, String>();

@@ -41,6 +41,8 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			<set-payload value="&lt;message&gt;Unauthorized&lt;/message&gt;"
 				doc:name="Unauthorized" />
 		</apikit:mapping>
+		 
+		
 		<apikit:mapping statusCode="404">
 			<apikit:exception
 				value="org.mule.module.apikit.exception.NotFoundException" />
@@ -113,9 +115,23 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			<apikit:exception value="org.mule.api.security.UnauthorisedException" />
 			<logger message="#[logExc('Unauthorized')]" level="WARN" category="${logger.common-mule-config}" doc:name="Unauthorized" />
 			<set-property propertyName="Content-Type" value="application/json" doc:name="JSON" />
-			<set-payload value="{ &quot;message&quot;: &quot;Unauthorized&quot; }" doc:name="Unauthorized" />
+			<set-payload value="{ &quot;message&quot;: &quot;Invalid security credentials&quot; }" doc:name="Invalid credentials message"/>
 			
 		</apikit:mapping>
+		<apikit:mapping statusCode="403">
+            <apikit:exception value="org.mule.api.security.NotPermittedException"/>
+            <logger message="#[logExc('security credentials do not have permission')]" level="INFO" category="${logger.common-mule-config}" doc:name="Resource not found" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Current credentials do not permit access to this resource&quot; }" doc:name="Invalid access rights message"/>
+        </apikit:mapping>
+		
+		<apikit:mapping statusCode="403">
+            <apikit:exception value="com.fl3x.uitls.InvalidJwtToken"/>
+            <logger message="#[logExc('jwt token is either invalid or expired')]" level="INFO" category="${logger.common-mule-config}" doc:name="Resource not found" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;jwt token is either invalid or expired&quot; #[exception.cause.message] }" doc:name="Invalid access rights message"/>
+        </apikit:mapping>
+		
 		<apikit:mapping statusCode="404">
 			<apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
 			<logger message="#[logExc('Resource not found')]" level="INFO" category="${logger.common-mule-config}" doc:name="Resource not found" />
@@ -167,7 +183,15 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 	
 	<flow name="order-api-main" processingStrategy="synchronous">
 		<inbound-endpoint ref="order-api-ep" doc:name="http-order"/>
-        <set-session-variable variableName="test" value="123" doc:name="Session Variable"/>
+        <choice doc:name="Choice">
+            <when expression="#[message.inboundProperties.'http.relative.path' == 'token']">
+                <logger level="INFO" doc:name="Logger" message="asdfasd"/>
+            </when>
+            <otherwise>
+            	<logger doc:name="Logger"/>
+             	<custom-transformer class="com.fl3x.token.ValidateToken" doc:name="java" /> 
+            </otherwise>
+        </choice>
 		<apikit:router config-ref="order-api-config" doc:name="APIkit Router" />
         <response>
             <logger message="logging final outbound payload #[payload]" level="INFO" category="${logger.order-api}" doc:name="logger"/>

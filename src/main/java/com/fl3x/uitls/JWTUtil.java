@@ -6,16 +6,15 @@ import javax.xml.bind.DatatypeConverter;
 
 
 
+
+
 import java.security.Key;
 
 import io.jsonwebtoken.*;
 
-import java.util.Collection;
 import java.util.Date;    
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 public class JWTUtil {
 
@@ -81,20 +80,53 @@ public class JWTUtil {
 		
 		}
 	
+	public static void parseJWT(String jwt, String secret) {
+		//This line will throw an exception if it is not a signed JWS (as expected)
+		
+		String tokenKey = new String(DatatypeConverter.printBase64Binary(secret.getBytes()));
+		
+		
+		Jwts.parser()
+		   .setSigningKey(DatatypeConverter.parseBase64Binary(tokenKey))
+		   .parseClaimsJws(jwt);
+		
+		
+		}
+	
 	 public static void main(String args[])
 	    {
 		 final String id = "test";
          final String secret = "ThisIsAVerySafeKeyToUse";
          final String issuer = " steven gonsalvez";
          final String subject = "THIS";
-         final long time = 3000 ;
+         final long time = 10 ;
          
          String outToken = JWTUtil.createJWT(id, secret, issuer, subject, time);
          
          System.out.println("JWT token: " + outToken); 
          
-         System.out.println("decoded map: " + JWTUtil.decodeJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJKb2huIERvZSIsImlhdCI6MTQ0MzY1OTIwMywic3ViIjoiU1RBRkYiLCJpc3MiOiJmbDN4IiwiZXhwIjoxNDQzNzQ1NjAzfQ.zkHOFKxZfHNi8PzQaNpMGC-v62OF_07ECevuyLXNe-M", secret));
+         //System.out.println("decoded map: " + JWTUtil.decodeJWT(outToken, secret));
          
+         try {
+			JWTUtil.parseJWT(outToken, secret);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+         
+         try {
+
+        	  	Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary((String)(DatatypeConverter.printBase64Binary(secret.getBytes())))).parseClaimsJws(outToken);
+
+        	    //OK, we can trust this JWT
+        	    System.out.println( "asda")  ;
+        	} catch (ExpiredJwtException e) {
+
+        	 System.out.println( "exception caught time")  ; //don't trust the JWT!
+        	}catch (UnsupportedJwtException ee){
+
+           	 System.out.println( "exception caught jsd")  ; //don't trust the JWT!
+           	}
 		 
 	    }
 	
