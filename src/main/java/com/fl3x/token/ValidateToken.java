@@ -45,8 +45,7 @@ public class ValidateToken extends AbstractMessageTransformer implements Tosecre
 		}
 	
 		}catch(Exception e) {
-			Message msg = CoreMessages.transformFailedBeforeFilter();
-	        throw new TransformerException(msg,this, e);
+			throw new InvalidJwtToken("asfasdfa");
 			
 		}
 	
