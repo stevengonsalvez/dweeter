@@ -189,7 +189,21 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
             </when>
             <otherwise>
             	<logger doc:name="Logger"/>
-             	<custom-transformer class="com.fl3x.token.ValidateToken" doc:name="java" /> 
+             	<custom-transformer class="com.fl3x.token.ValidateToken" doc:name="java" />
+                <scripting:component doc:name="Groovy">
+                    <scripting:script engine="Groovy"><![CDATA[import org.mule.api.transport.*;
+import com.fl3x.uitls.*;
+
+status = flowVars["payloadfail"];
+
+if ( status == "TRUE") {
+
+throw new com.fl3x.uitls.InvalidJwtToken("asdfjaslkfjnbaslkjf");
+}
+
+
+return payload]]></scripting:script>
+                </scripting:component> 
             </otherwise>
         </choice>
 		<apikit:router config-ref="order-api-config" doc:name="APIkit Router" />

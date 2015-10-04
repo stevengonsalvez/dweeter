@@ -5,11 +5,8 @@ package com.fl3x.token;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
-import org.mule.config.i18n.CoreMessages;
-import org.mule.config.i18n.Message;
 import org.mule.transformer.AbstractMessageTransformer;
 
-import com.fl3x.uitls.InvalidJwtToken;
 import com.fl3x.uitls.JWTUtil;
 import com.fl3x.uitls.Tosecret;
 
@@ -20,7 +17,9 @@ public class ValidateToken extends AbstractMessageTransformer implements Tosecre
 	@Override
 	public Object transformMessage(MuleMessage message, String outputEncoding)
 			throws TransformerException {
-		try{
+		
+		
+		final String PAYLOAD_IF_FAIL = "payloadfail";
 		System.out.println ("entering into this");
 		String bearer = (String)message.getInboundProperty("Authorization");
 		System.out.println ("exiting this");
@@ -30,7 +29,12 @@ public class ValidateToken extends AbstractMessageTransformer implements Tosecre
 		String method = message.getInboundProperty("http.method");
 		
 		
-		JWTUtil.parseJWT(jwttoken, STR_PASSWORD);
+		try{
+			JWTUtil.parseJWT(jwttoken, STR_PASSWORD);
+		}catch (Exception e){
+		   message.setInvocationProperty(PAYLOAD_IF_FAIL, "TRUE");
+			
+		}
 		
 	
 		if (method != "GET"){
@@ -44,10 +48,8 @@ public class ValidateToken extends AbstractMessageTransformer implements Tosecre
 			
 		}
 	
-		}catch(Exception e) {
-			throw new InvalidJwtToken("asfasdfa");
-			
-		}
+		
 	
 	}
+	
 }
