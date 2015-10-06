@@ -3,10 +3,6 @@ command-timeout: 40
 no-response-timeout: 60
 build:
   steps:
-    - script:
-        name: doing a wget test
-        code: |
-           wget https://repo.maven.apache.org/maven2/org/mule/tools/maven/mule-app-maven-plugin/1.0/mule-app-maven-plugin-1.0.pom
    - script:
         code: |
             export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64
