@@ -10,6 +10,6 @@ build:
         settings: settings.xml
   after-steps:
     - sherzberg/slack-notify:
-         subdomain: wercker
+         subdomain: fl3x
          token: $SLACK_TOKEN
          channel: general
