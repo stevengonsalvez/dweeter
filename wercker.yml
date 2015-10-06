@@ -1,4 +1,4 @@
-box: stevengonsalvez/mvnmuleelastic:1.2
+box: stevengonsalvez/mvnmuleelastic:1.2.m2
 command-timeout: 40
 no-response-timeout: 60
 build:

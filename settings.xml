@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+		<server>
+			<id>Central</id>
+			<configuration>
+			    <timeout>4000</timeout>
+			</configuration>
+		</server>
+		<server>
+			<id>mulesoft-releases</id>
+			<configuration>
+			    <timeout>4000</timeout>
+			</configuration>
+		</server>
+		<server>
+			<id>mulesoft-snapshots</id>
+			<configuration>
+			    <timeout>4000</timeout>
+			</configuration>
+		</server>
+		<server>
+			<id>smartbear-sweden-plugin-repository</id>
+			<configuration>
+			    <timeout>4000</timeout>
+			</configuration>
+		</server>
+		<server>
+			<id>mulesoft-dependencies</id>
+			<configuration>
+			    <timeout>4000</timeout>
+			</configuration>
+		</server>
+	</servers>
+	<offline>true</offline>
+	<localRepository>/root/.m2/repository</localRepository>
+  
   <profiles>
     <profile>
       <id>anyprofile</id>
