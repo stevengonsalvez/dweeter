@@ -1,7 +1,16 @@
 box: stevengonsalvez/mvnmuleelastic:1.2
-no-response-timeout: 30
+command-timeout: 40
+no-response-timeout: 60
 build:
   steps:
+    - script:
+        name: doing a wget test
+        code: |
+           wget https://repo.maven.apache.org/maven2/org/mule/tools/maven/mule-app-maven-plugin/1.0/mule-app-maven-plugin-1.0.pom
+    - script:
+        name: ping test
+        code: |
+            ping google.co.uk
     - script:
         code: |
             export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64
@@ -11,5 +20,5 @@ build:
   after-steps:
     - sherzberg/slack-notify:
          subdomain: fl3x
-         token: $SLACK_TOKEN
+         token: T04KUPJ31/B0BU7E2V8/blVrE9tqQeEbK91prkzB0RD3
          channel: general
