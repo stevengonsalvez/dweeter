@@ -1,6 +1,15 @@
-box: maven:latest
+box: stevengonsalvez/mvnmuleelastic:1.2
+no-response-timeout: 30
 build:
   steps:
+    - script:
+        code: |
+            export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64
     - xenoterracide/maven:
         goals: clean install
         settings: settings.xml
+  after-steps:
+    - sherzberg/slack-notify:
+         subdomain: wercker
+         token: $SLACK_TOKEN
+         channel: general
