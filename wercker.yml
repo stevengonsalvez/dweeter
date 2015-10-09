@@ -1,4 +1,4 @@
-box: stevengonsalvez/mvnmuleelastic:1.2.m2
+box: stevengonsalvez/mvnmuleelastic:1.5
 command-timeout: 40
 no-response-timeout: 60
 build:
@@ -6,12 +6,10 @@ build:
    - script:
         code: |
             export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64
-   - xenoterracide/maven:
-        goals: clean install
-        settings: settings.xml
+   - script:
+        code: |
+            mvn -o -Dmaven.repo.local=/root/.m2/repository clean install -Dmaven.test.skip
   after-steps:
-     - slack-notifier:
-            url: https://hooks.slack.com/services/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
-            channel: tech_dev
-            username: stevengonsalvez
-           
+   - kobim/slack-post:
+            url: https://hooks.slack.com/services/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
+            channel: buildci
