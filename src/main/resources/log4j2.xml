@@ -4,26 +4,28 @@
 	<Appenders>
 	
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%-5p %d [%t] %c: %m%n" />
+			<PatternLayout pattern="%X{Tracking_Id} %d{ISO8601} %-5p [%t] [%F:%L] - %m%n" />
 		</Console>
 			
-		<RollingFile name="FileLog" fileName="${sys:mule.home}/logs/flex-order-hub.log"
-			filePattern="${sys:mule.home}/logs/flex-y5p-client-%i.log">
+		<RollingFile name="FileLog" fileName="${sys:mule.home}/logs/cs-integration.log"
+			filePattern="${sys:mule.home}/logs/cs-integration-%d{MM-dd-yyyy}-%i.log">
 			<PatternLayout>
-			  <Pattern>%-5p %d %t [%c] %x: %m%n</Pattern>
+			  <Pattern>%X{Tracking_Id} %d{ISO8601} %-5p [%t] [%F:%L] - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
   				<SizeBasedTriggeringPolicy size="20 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
 
- 		<RollingFile name="AlertsLog" fileName="${sys:mule.home}/logs/flex-order-hub.log"
- 			filePattern="${sys:mule.home}/logs/flex-y5p-client-%i.log">
+ 		<RollingFile name="AlertsLog" fileName="${sys:mule.home}/logs/cs-integration-alerts.log"
+ 			filePattern="${sys:mule.home}/logs/cs-integration-%d{MM-dd-yyyy}-%i.log">
 			<PatternLayout>
-			  <Pattern>%-5p %d %t [%c] %x: %m%n</Pattern>
+			  <Pattern>%X{Tracking_Id} %d{ISO8601} %-5p [%t] [%F:%L] - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
   				<SizeBasedTriggeringPolicy size="20 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="20"/>
@@ -32,6 +34,7 @@
 		<Syslog name="SysLog" format="RFC5424" host="localhost" port="514"
             protocol="UDP" appName="flex-order-hub" mdcId="mdc" includeMDC="true"
             facility="local1" newLine="true" messageId="Alert" id="flex-order-hub" />
+           
     	
 	</Appenders>
 

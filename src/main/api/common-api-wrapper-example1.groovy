@@ -1,1 +1,0 @@
-return [ "language":"test", "transactionId": "123123", "correlationId": "asdasd", "createdTimestamp": "2015-03-10T12:49:10", "clientApplication":"test",  "securityClassification":"test", "payloadKey":"test", "etag": "test"]

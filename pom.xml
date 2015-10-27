@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fl3x.mule.app</groupId>
-	<artifactId>order-api</artifactId>
+	<artifactId>cs-integration</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>mule</packaging>
-	<name>flex order hub</name>
+	<name>fl3x cs integration</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,8 +27,8 @@
 
 		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml</soapui.projectFile>
 		<soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
-		<soapui.endpoint.username />
-		<soapui.endpoint.password />
+		<soapui.endpoint.username/>
+		<soapui.endpoint.password/>
 
 
 	</properties>
@@ -123,9 +122,8 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<zip destfile="${project.build.directory}/${project.build.finalName}.zip"
-									update="true">
-									<zipfileset dir="${project.basedir}/lib" prefix="lib" />
+								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
+									<zipfileset dir="${project.basedir}/lib" prefix="lib"/>
 								</zip>
 							</tasks>
 						</configuration>
@@ -142,15 +140,9 @@
 						<configuration>
 							<skip>true</skip>
 							<tasks unless="maven.test.skip">
-								<sshexec host="54.172.204.35"
-									trust="true" failonerror="true" username="mule" password="mule"
-									command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* " />
-								<scp failonerror="true"
-									file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@54.172.204.35:/tmp"
-									trust="true"></scp>
-								<sshexec host="54.172.204.35"
-									failonerror="true" username="mule" password="mule"
-									command="cp /tmp/order-api* /opt/mule/apps" />
+								<sshexec command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* " failonerror="true" host="54.172.204.35" password="mule" trust="true" username="mule"/>
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@54.172.204.35:/tmp" trust="true"/>
+								<sshexec command="cp /tmp/order-api* /opt/mule/apps" failonerror="true" host="54.172.204.35" password="mule" username="mule"/>
 							</tasks>
 						</configuration>
 					</execution>
@@ -407,7 +399,25 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.5.1</version>
 		</dependency>
-	</dependencies>
+	<dependency>
+            <groupId>org.mule.transports</groupId>
+            <artifactId>mule-transport-quartz</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-ws</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    <dependency>
+            <groupId>com.mulesoft.muleesb.modules</groupId>
+            <artifactId>mule-module-data-mapper</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>

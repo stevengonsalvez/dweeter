@@ -1,3 +1,0 @@
-- basic_auth:
-    description: HTTP Basic Authentication as defined in RFC 2617.
-    type: Basic Authentication
