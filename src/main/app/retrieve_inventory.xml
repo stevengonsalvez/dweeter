@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd
@@ -10,63 +10,70 @@ http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
     <http:request-config name="def_http_request_config"   doc:name="HTTP Request Configuration"/>
     <http:listener-config name="def_http_listener" host="0.0.0.0" port="8082" basePath="/inventory" doc:name="HTTP Listener Configuration"/>
-   <!--  <ws:consumer-config name="sekoServiceConsumer" wsdlLocation="./wsdl/DcsWebService.wsdl" service="DcsWebServiceService" port="DcsWebServicePort" serviceAddress="http://usp.sekosynergy.co.uk:8880/dispwms_dcs/dcswebservice/DcsWebService" doc:name="Web Service Consumer"/> -->
+   	<!--  <ws:consumer-config name="sekoServiceConsumer" wsdlLocation="./wsdl/DcsWebService.wsdl" service="DcsWebServiceService" port="DcsWebServicePort" serviceAddress="http://usp.sekosynergy.co.uk:8880/dispwms_dcs/dcswebservice/DcsWebService" doc:name="Web Service Consumer"/> -->
 
-<flow name="invoke_retrieveInventory">
- <http:listener config-ref="def_http_listener" path="/seko" doc:name="HTTP"/>
- <flow-ref name="retrieveinventory" doc:name="Flow Reference"/>
-        <mulexml:xslt-transformer xsl-file="./xslt/seko-response-cs-request-xml.xslt" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT">
+
+	<global-property name="logger.cs-inventory-integration"
+		value="com.cs.mule.configfile.cs-inventory-integration"
+		doc:name="Logger" />
+    <http:request-config name="cs_http_request_config" doc:name="HTTP Request Configuration" protocol="HTTPS">
+        <http:basic-authentication username="sekointegration" password="Eix1Ohjeishi1Nae" />
+        <tls:context>
+            <tls:trust-store path="./security/cs_truststore.jks" password="password" type="jks"/>
+        </tls:context>
+    </http:request-config>
+		
+		<flow name="time-trigger-synch">
+        <poll doc:name="Poll">
+            <fixed-frequency-scheduler frequency="5000"/>
+            <flow-ref name="retrieveinventory" doc:name="retrieveinventory"/>
+        </poll>
+        <flow-ref name="map-to-cs-api" doc:name="map-to-cs-api"/>
+        <http:request config-ref="cs_http_request_config" path="/api/v1/stock/quantities" method="POST" doc:name="invoke_cs_api" host="api-sys.cambridgesatchel.io" port="443">
+            <http:success-status-code-validator values="200,202,204"/>
+        </http:request>
+        <logger message="response #[message.inboundProperties]" level="INFO" doc:name="Logger"/>
+		  <!-- <quartz:inbound-endpoint 
+        jobName="triggerJob" 
+        repeatInterval="5000" 
+        cronExpression="0 0 10 ? * WED" 
+        doc:name="Quartz"> -->
+        
+        <choice-exception-strategy doc:name="Choice Exception Strategy">
+        <catch-exception-strategy doc:name="default">
+            <logger message="Handle default exception" level="ERROR" category="==============&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
+        </flow>
+		
+	<flow name="invoke_retrieveInventory">
+ 		<http:listener config-ref="def_http_listener" path="/seko" doc:name="HTTP"/>
+ 		<flow-ref name="retrieveinventory" doc:name="retrieveinventory-seko"/>
+ 		<flow-ref name="map-to-cs-api"    doc:name="map-to-cs-api"/>
+
+	</flow>
+
+<sub-flow name="map-to-cs-api">
+ <mulexml:xslt-transformer xsl-file="./xslt/seko-response-cs-request-xml.xslt" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT">
         <mulexml:context-property key="requestId" value="#[function:uuid]"></mulexml:context-property>
         
         </mulexml:xslt-transformer>
         <json:xml-to-json-transformer doc:name="XML to JSON"/>
         <scripting:component doc:name="Groovy">
-            <scripting:script engine="Groovy"><![CDATA[import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-
-def slurper = new JsonSlurper()
-
-def jsonMap = slurper.parseText(payload).response
-def oldUpdateList = jsonMap.updates;
-//System.out.println(oldUpdateList);
-def stockUpdateList = new java.util.ArrayList();
-
-
-
-oldUpdateList.each{
-    def stockNewUpdate = [:];
-    stockNewUpdate.productSkuNumber = (it).productSkuNumber;
-    stockNewUpdate.locationId = (it).locationId.toInteger();
-    def operation=[:];
-    operation.name=(it).operation.name;
-    operation.value=(it).operation.value.toInteger();
-    stockNewUpdate.operation = operation;
-    stockNewUpdate.reasonCode= (it).reasonCode;
-    stockNewUpdate.userNote= (it).userNote;
-    stockUpdateList.add(stockNewUpdate);
-
-}
-jsonMap.updates=stockUpdateList;
-def user =[:];
-user.name="Steven Gonsalvez";
-jsonMap.user=user;
-
-payload = JsonOutput.toJson(jsonMap)]]></scripting:script>
+            <scripting:script engine="Groovy" file="./groovy/convert-to-cs-api-quantity-json.groovy"></scripting:script>
         </scripting:component>
 
-</flow>
-
-
+</sub-flow>
 <sub-flow name="retrieveinventory">
+        <logger message="${runEnv} --- this is logged" level="INFO" doc:name="Logger"/>
        
         <set-session-variable variableName="runEnv" value="${runEnv}" doc:name="Session Variable"/>
        
         	<parse-template location="./samples/DcsWebService.xml" doc:name="Parse Template"/>
-        	<set-payload doc:name="Set Payload" value="#[payload]"/>
-        <logger message="${runEnv} --- this is logged" level="INFO" doc:name="Logger"/>
              <http:request config-ref="def_http_request_config" path="/dispwms_dcs/dcswebservice/DcsWebService" method="POST" doc:name="HTTP" host="usp.sekosynergy.co.uk" port="8880"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
         

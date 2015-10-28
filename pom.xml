@@ -2,19 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fl3x.mule.app</groupId>
+	<groupId>com.cs.mule.app</groupId>
 	<artifactId>cs-integration</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>mule</packaging>
-	<name>fl3x cs integration</name>
+	<name>cs-seko-integration</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- for fl3x: to run on 3.6.1 CE use: -->
+		<!-- for cs: to run on 3.6.1 CE use: -->
 		<mule.version>3.6.1</mule.version>
-		<!-- for fl3x: to run on 3.6.2 EE use: <mule.version>3.6.2</mule.version> -->
+		<!-- for cs: to run on 3.6.2 EE use: <mule.version>3.6.2</mule.version> -->
 		<mule.tools.version>1.0</mule.tools.version>
 
 
@@ -86,22 +86,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--Install clover-plugins -->
-			<!-- for fl3x: don't need clover: <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-dependency-plugin</artifactId> <version>2.4</version> <executions> 
-				<execution> <id>copy-clover-plugins</id> <phase>validate</phase> <goals> 
-				<goal>copy</goal> </goals> <configuration> <overWriteReleases>true</overWriteReleases> 
-				<overWriteSnapshots>true</overWriteSnapshots> <overWriteIfNewer>true</overWriteIfNewer> 
-				<stripVersion>true</stripVersion> <outputDirectory>${project.build.testOutputDirectory}</outputDirectory> 
-				<artifactItems> <artifactItem> <groupId>com.cloveretl</groupId> <artifactId>cloveretl-engine</artifactId> 
-				<version>${mule.version}</version> <type>zip</type> </artifactItem> </artifactItems> 
-				</configuration> </execution> </executions> </plugin> <plugin> <artifactId>maven-antrun-plugin</artifactId> 
-				<version>1.7</version> <executions> <execution> <phase>compile</phase> <configuration> 
-				<tasks> <!- Using an ant task to deflate cloveretl-engine.zip -> <unzip dest="${project.build.testOutputDirectory}" 
-				src="${project.build.testOutputDirectory}/cloveretl-engine.zip" /> </tasks> 
-				</configuration> <goals> <goal>run</goal> </goals> </execution> </executions> 
-				</plugin> -->
-			<!-- for fl3x: to compile Java 1.7 source -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -111,7 +95,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- for fl3x: add the bundled proprietary (non-Maven repo) jars to the 
+			<!-- for cs: add the bundled proprietary (non-Maven repo) jars to the 
 				app zip -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -160,19 +144,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!-- added for fl3x to deploy using the REST plugin -->
-			<!-- <plugin> <groupId>org.mule.tools</groupId> <artifactId>mule-mmc-rest-plugin</artifactId> 
-				<version>1.3.4</version> <executions> <execution> <id>mule-deploy</id> <phase>pre-integration-test</phase> 
-				<goals> <goal>deploy</goal> </goals> <configuration> <goalPrefix>mule-mmc-rest</goalPrefix> 
-				<muleApiUrl>${mmc.url}</muleApiUrl> <name>${project.artifactId}</name> <username>${mmc.username}</username> 
-				<password>${mmc.password}</password> <appDirectory>${project.basedir}/src/main/app</appDirectory> 
-				<finalName>${project.artifactId}-${project.version}</finalName> <version>${project.version}</version> 
-				<domain>${mmc.deploy.domain}</domain> <serverGroup>${mmc.serverGroup}</serverGroup> 
-				<fileNamePattern>regex:^.*mule-config.xml$</fileNamePattern> <propToReplace>fl3x.env.deploytime</propToReplace> 
-				<clusterName>${mmc.clusterName}</clusterName> <skip>${skip.deploy.ciserver}</skip> 
-				</configuration> </execution> </executions> </plugin> -->
-
-			<!-- plugin added for soap ui testing -->
 			<plugin>
 				<groupId>com.github.redfish4ktc.soapui</groupId>
 				<artifactId>maven-soapui-extension-plugin</artifactId>
@@ -218,15 +189,6 @@
 
 	<!-- Mule Dependencies -->
 	<dependencies>
-		<!-- Xml configuration -->
-		<!-- <dependency> <groupId>com.mulesoft.muleesb</groupId> <artifactId>mule-core-ee</artifactId> 
-			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
-		<!-- Xml configuration -->
-		<!-- for fl3x: don't need EE-version of Spring but CE version included 
-			further below: <dependency> <groupId>com.mulesoft.muleesb.modules</groupId> 
-			<artifactId>mule-module-spring-config-ee</artifactId> <version>${mule.version}</version> 
-			<scope>provided</scope> </dependency> -->
-		<!-- Mule Transports -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-file</artifactId>
@@ -239,24 +201,6 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-jdbc</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- for fl3x: don't need EE-version of JDBC but CE version included immediately 
-			above: <dependency> <groupId>com.mulesoft.muleesb.transports</groupId> <artifactId>mule-transport-jdbc-ee</artifactId> 
-			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-jms</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- for fl3x: don't need EE-version of JMS but CE version included immediately 
-			above: <dependency> <groupId>com.mulesoft.muleesb.transports</groupId> <artifactId>mule-transport-jms-ee</artifactId> 
-			<version>${mule.version}</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-vm</artifactId>
@@ -283,7 +227,7 @@
 			<version>${mule.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- for fl3x: don't need clover: <dependency> <groupId>com.cloveretl</groupId> 
+		<!-- for cs: don't need clover: <dependency> <groupId>com.cloveretl</groupId> 
 			<artifactId>cloveretl-engine</artifactId> <version>${mule.version}</version> 
 			<scope>test</scope> </dependency> -->
 		<dependency>
@@ -303,7 +247,7 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- for fl3x from here -->
+		<!-- for cs from here -->
 		<!-- depend on a version of commons-lang that's available both in 3.6.1 
 			CE and 3.6.2 EE: -->
 		<dependency>
@@ -319,62 +263,6 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 			<scope>provided</scope>
-		</dependency>
-		<!-- to check MySQL databases -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.35</version>
-		</dependency>
-		<!-- to check Derby embedded databases -->
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.11.1.1</version>
-		</dependency>
-		<!-- to check DB2 databases -->
-		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2-local</artifactId>
-			<version>4.14.88</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/db2jcc4.jar</systemPath>
-		</dependency>
-		<!-- to check WS MQ queue managers -->
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>mq-local</artifactId>
-			<version>7.5.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/com.ibm.mq.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>mqjms-local</artifactId>
-			<version>7.5.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/com.ibm.mqjms.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>jmqi-local</artifactId>
-			<version>7.5.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/com.ibm.mq.jmqi.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>dhbcore-local</artifactId>
-			<version>7.5.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/dhbcore.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>headers-local</artifactId>
-			<version>7.5.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/com.ibm.mq.headers.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -408,12 +296,6 @@
     <dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-module-ws</artifactId>
-            <version>${mule.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    <dependency>
-            <groupId>com.mulesoft.muleesb.modules</groupId>
-            <artifactId>mule-module-data-mapper</artifactId>
             <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>

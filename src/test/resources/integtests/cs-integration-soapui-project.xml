@@ -1,13 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="42b15d2a-df53-4d07-aa1a-c7095bb4d3fd" activeEnvironment="Default" name="cs-integration" resourceRoot="" soapui-version="5.1.3" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="e36a9c99-0ee7-4d8a-bc9a-556091cbc983" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://api-sys.cambridgesatchel.io" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint></con:endpoints><con:resource name="Quantities" path="/api/v1/stock/quantities" id="7a770d8e-cfa5-48a9-b854-fcd850fb4748"><con:settings/><con:parameters/><con:method name="Quantities" id="2ecf6c9c-161e-4f6b-b1c0-2986834ffae3" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>409 404</con:status><con:params/><con:element xmlns:quan="https://api-sys.cambridgesatchel.io/api/v1/stock/quantities">quan:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="4700ea11-d8b1-425f-84ab-cefb9fdbbb93" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request>{
-    "requestId": "9a1b94ac-a657-43a6-969f-ba18733f6fa3",
+<con:soapui-project id="42b15d2a-df53-4d07-aa1a-c7095bb4d3fd" activeEnvironment="Default" name="cs-integration" resourceRoot="" soapui-version="5.1.3" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="e36a9c99-0ee7-4d8a-bc9a-556091cbc983" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://api-sys.cambridgesatchel.io" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint></con:endpoints><con:resource name="Quantities" path="/api/v1/stock/quantities" id="7a770d8e-cfa5-48a9-b854-fcd850fb4748"><con:settings/><con:parameters/><con:method name="Quantities" id="2ecf6c9c-161e-4f6b-b1c0-2986834ffae3" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>409 404 400</con:status><con:params/><con:element xmlns:quan="https://api-sys.cambridgesatchel.io/api/v1/stock/quantities">quan:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:quan="https://api-sys.cambridgesatchel.io/api/v1/stock/quantities">quan:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>204</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="4700ea11-d8b1-425f-84ab-cefb9fdbbb93" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request>{
+  "requestId": "b50e3720-7c4a-11e5-8096-0a0027000002",
+  "updates": [
+    {
+      "productSkuNumber": "SAT141001NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 400
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141002NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 200
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141003NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 200
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141004NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 100
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141005NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 200
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141006NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 95
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141007NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 260
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141008NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 1100
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141009NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 700
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    },
+    {
+      "productSkuNumber": "SAT141010NIC10101",
+      "locationId": 21,
+      "operation": {
+        "name": "set",
+        "value": 267
+      },
+      "reasonCode": "NEWSTOCK",
+      "userNote": "New bags"
+    }
+  ],
+  "user": {
+    "name": "Steven Gonsalvez"
+  }
+}</con:request><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/quantities</con:originalUri><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="product" path="/api/v1/stock/products/{sku}" id="cdb198d0-7d61-45dc-8e81-1c1ba5b1948b"><con:settings/><con:parameters><con:parameter><con:name>sku</con:name><con:value>sku</con:value><con:style>TEMPLATE</con:style><con:default>sku</con:default></con:parameter></con:parameters><con:method name="Products" id="bc53072e-bde8-45e2-8eaa-f0e82817ab86" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>404</con:status><con:params/><con:element xmlns:sat="https://api-sys.cambridgesatchel.io/api/v1/stock/product/SAT141001NIC10101">sat:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sat="https://api-sys.cambridgesatchel.io/api/v1/stock/product/SAT141001NIC10101">sat:Response</con:element></con:representation><con:request name="Request 1" id="b70292d8-3b8d-4dc9-8493-439f477a6eb5" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request/><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/product/SAT141001NIC10101</con:originalUri><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="sku" value="SAT141001NIC10101" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>sku</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:testSuite id="20abad94-55b7-433c-8a74-9d22c18d8145" name="api-sys.cambridgesatchel.io-inventory"><con:description>TestSuite generated for REST Service [https://api-sys.cambridgesatchel.io]</con:description><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="c0db89c9-e864-404f-99e4-42b1bd61477f" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Quantities TestCase" searchProperties="true"><con:description>TestCase generated for REST Resource [Quantities] located at [/api/v1/stock/quantities]</con:description><con:settings/><con:testStep type="groovy" name="setUUID" id="b74a253f-4758-4598-9505-4f89454cfbcd"><con:settings/><con:config><script>
+
+ UUID uuid = UUID.randomUUID();
+ String randomUUIDString = uuid.toString();
+
+ def  qty = (String)(int)(Math.random()*100);
+ context.setProperty("QTY",qty );
+ 
+
+context.setProperty("uuidv4",randomUUIDString );
+
+
+log.info(context.getProperty("uuidv4"));
+log.info(context.getProperty("QTY"));
+</script></con:config></con:testStep><con:testStep type="restrequest" name="postInventory" id="a2e38754-f5d6-4dc2-ab48-841dfc34e496"><con:settings/><con:config service="https://api-sys.cambridgesatchel.io" resourcePath="/api/v1/stock/quantities" methodName="Quantities" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="postInventory" id="4700ea11-d8b1-425f-84ab-cefb9fdbbb93" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request>{
+    "requestId": "${uuidv4}",
     "updates": [
         {
             "productSkuNumber": "SAT141001NIC10101",
             "locationId": 21,
             "operation": {
                 "name": "set",
-                "value": 40
+                "value": ${QTY}
             },
             "reasonCode": "NEWSTOCK",
             "userNote": "New bags"
@@ -16,21 +137,4 @@
     "user": {
         "name": "Steven Gonsalvez"
     }
-}</con:request><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/quantities</con:originalUri><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="product" path="/api/v1/stock/product" id="cdb198d0-7d61-45dc-8e81-1c1ba5b1948b"><con:settings/><con:parameters/><con:method name="Method 1" id="bc53072e-bde8-45e2-8eaa-f0e82817ab86" method="GET"><con:settings/><con:parameters/><con:request name="Request 1" id="b70292d8-3b8d-4dc9-8493-439f477a6eb5" mediaType="application/json"><con:settings/><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:testSuite id="20abad94-55b7-433c-8a74-9d22c18d8145" name="api-sys.cambridgesatchel.io-inventory"><con:description>TestSuite generated for REST Service [https://api-sys.cambridgesatchel.io]</con:description><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="c0db89c9-e864-404f-99e4-42b1bd61477f" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Quantities TestCase" searchProperties="true"><con:description>TestCase generated for REST Resource [Quantities] located at [/api/v1/stock/quantities]</con:description><con:settings/><con:testStep type="restrequest" name="Request 1" id="a2e38754-f5d6-4dc2-ab48-841dfc34e496"><con:settings/><con:config service="https://api-sys.cambridgesatchel.io" resourcePath="/api/v1/stock/quantities" methodName="Quantities" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Request 1" id="4700ea11-d8b1-425f-84ab-cefb9fdbbb93" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request>{
-    "requestId": "9a1b94ac-a657-43a6-969f-ba18733f6fa3",
-    "updates": [
-        {
-            "productSkuNumber": "SAT141001NIC10101",
-            "locationId": 21,
-            "operation": {
-                "name": "set",
-                "value": 40
-            },
-            "reasonCode": "NEWSTOCK",
-            "userNote": "New bags"
-        }
-    ],
-    "user": {
-        "name": "Steven Gonsalvez"
-    }
-}</con:request><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/quantities</con:originalUri><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>cs_username</con:name><con:value>sekointegration</con:value></con:property><con:property><con:name>cs_password</con:name><con:value>Eix1Ohjeishi1Nae</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+}</con:request><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/quantities</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="f424fb1a-1865-40ca-a0e1-793fee8d6428" name="Valid HTTP Status Codes"><con:configuration><codes>200,202,204</codes></con:configuration></con:assertion><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="getSku" id="f0671e25-9d21-4dbb-9191-71738c954487"><con:settings/><con:config service="https://api-sys.cambridgesatchel.io" resourcePath="/api/v1/stock/products/{sku}" methodName="Products" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="getSku" id="4700ea11-d8b1-425f-84ab-cefb9fdbbb93" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api-sys.cambridgesatchel.io</con:endpoint><con:request/><con:originalUri>https://api-sys.cambridgesatchel.io/api/v1/stock/quantities</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="f424fb1a-1865-40ca-a0e1-793fee8d6428" name="Valid HTTP Status Codes"><con:configuration><codes>200,202,204</codes></con:configuration></con:assertion><con:credentials><con:username>${#Project#cs_username}</con:username><con:password>${#Project#cs_password}</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="sku" value="SAT141001NIC10101" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties/><con:setupScript/><con:tearDownScript/></con:testSuite><con:properties><con:property><con:name>cs_username</con:name><con:value>sekointegration</con:value></con:property><con:property><con:name>cs_password</con:name><con:value>Eix1Ohjeishi1Nae</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
