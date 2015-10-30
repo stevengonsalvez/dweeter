@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:core="http://www.mulesoft.org/schema/mule/core"
+<mule xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:core="http://www.mulesoft.org/schema/mule/core"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:context="http://www.springframework.org/schema/context" 
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
@@ -11,6 +13,8 @@
 	xmlns:ss="http://www.springframework.org/schema/security"
 	version="CE-3.6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd 
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -18,9 +22,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/3.1/mule-spring-security.xsd
 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-	<!-- identifies the current M&S environment (mns.env.deploytime is substituted by its value at deploytime) -->
-	<!-- <global-property name="mns.env" value="${mns.env.deploytime}" doc:name="mns.env" /> -->
-
+	
 	<spring:beans>
 		<spring:bean id="seko-service-props" name="seko-service-props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 			<spring:property name="locations">
@@ -77,36 +79,24 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
     </http:request-config>
 	
 	<global-property name="logger.common-mule-config"
-		value="com.fl3x.mule.configfile.common-mule-config" doc:name="Logger" />
+		value="com.cs.mule.configfile.common-mule-config" doc:name="Logger" />
 		
-	<!-- security manager configuration for this app, specifically for the services it exposes -->
-	<spring:beans>
-		<ss:authentication-manager alias="service-auth-mgr">
-			<ss:authentication-provider>
-				<ss:user-service id="user-svc">
-					<ss:user name="${service.auth.username}" password="${service.auth.password}" authorities="ROLE_ADMIN" />
-				</ss:user-service>
-			</ss:authentication-provider>
-		</ss:authentication-manager>
-	</spring:beans>
-	<mule-ss:security-manager name="service-sec-mgr">
-		<mule-ss:delegate-security-provider name="service-memory-sec-provider" delegate-ref="service-auth-mgr" />
-	</mule-ss:security-manager>
+	 <http:request-config name="http_etc_shared" protocol="HTTP" doc:name="HTTP shared giftcard request connector">
+    	<http:basic-authentication username="${etc.username}" password="${etc.password}" />
+        <tcp:client-socket-properties keepAlive="true"/>
+    </http:request-config>
 	
-	<http:connector name="http-conn-shared" validateConnections="true" keepAlive="true" sendTcpNoDelay="true" doc:name="HTTP Connector" clientSoTimeout="10000" cookieSpec="netscape" receiveBacklog="0" receiveBufferSize="0" sendBufferSize="0" serverSoTimeout="10000" socketSoLinger="0">
-		<core:receiver-threading-profile poolExhaustedAction="DISCARD" maxThreadsActive="${http.conn.max.threads.active}"
-			maxThreadsIdle="${http.conn.max.threads.idle}" />
-		<core:service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
-	</http:connector>
 	
-	<http:endpoint name="order-api-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.ep.path}"
-		keepAlive="true" connector-ref="http-conn-shared" doc:name="order API HTTP endpoint">
-		<!-- <mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" /> -->
-	</http:endpoint>
-	<http:endpoint name="order-api-console-ep" address="http://${service.ep.host}:${service.ep.default.http.port}${frontend.api.console.ep.path}"
-		keepAlive="true" connector-ref="http-conn-shared" doc:name=" API console HTTP endpoint">
-		<!-- <mule-ss:http-security-filter realm="fl3x Service Authentication" securityManager-ref="service-sec-mgr" /> -->
-	</http:endpoint>
+	<vm:connector name="vm-conn-es-shared" validateConnections="true" doc:name="VM Connector for cs">
+		<core:receiver-threading-profile poolExhaustedAction="WAIT" maxThreadsActive="${vm.conn.cs.max.threads.active}"
+			maxThreadsIdle="${vm.conn.cs.max.threads.idle}" />
+		<vm:queue-profile maxOutstandingMessages="${vm.cs.queue.size}">
+			<core:default-in-memory-queue-store />
+		</vm:queue-profile>
+	</vm:connector>
+	<vm:endpoint name="vm-es-requ-ep" exchange-pattern="one-way" path="vm-audit-requ" connector-ref="vm-conn-es-shared"
+		doc:name="shared es requests queue" />
+	
 	
 	<!-- call this flow from all flows in your app which communicate outside that app. Call it immediately after entering such a flow, then call audit-common. -->
 	<sub-flow name="entry-log" >
