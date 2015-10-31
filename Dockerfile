@@ -8,5 +8,5 @@ COPY wrapper.conf /opt/mule/conf/
 EXPOSE 8082
 EXPOSE 9200
 
-CMD service elasticsearch start && /opt/mule/bin/mule -DrunEnv=dev
+CMD service elasticsearch start && /opt/mule/bin/mule -D-M-DrunEnv=dev
 
