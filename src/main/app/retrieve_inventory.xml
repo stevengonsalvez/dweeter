@@ -39,8 +39,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 	<http:request-config name="cs_http_request_config"
 		doc:name="HTTP Request Configuration" protocol="HTTPS">
-		<http:basic-authentication username="sekointegration"
-			password="Eix1Ohjeishi1Nae" />
+		<http:basic-authentication username="${cs_user}"
+			password="${cs_password}" />
 		<tls:context>
 			<tls:trust-store path="./security/cs_truststore.jks"
 				password="password" type="jks" />
@@ -49,20 +49,23 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 	<flow name="time-trigger-synch">
 		<poll doc:name="Poll">
-			<fixed-frequency-scheduler frequency="${synch.frequency}" />
+			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="SECONDS"/>
 			<flow-ref name="retrieveinventory" doc:name="retrieveinventory" />
 		</poll>
-        <logger message="---------- Position: Entry || subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
+        <flow-ref name="entry-log" doc:name="entry-log"/>
+        <logger message="---------- Position: Entry ||subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
 		<flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" />
 		<vm:outbound-endpoint ref="vm-es-requ-ep"
 			doc:name="VM_ELK" />
+        <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
 		<http:request config-ref="cs_http_request_config" path="/api/v1/stock/quantities"
 			method="POST" doc:name="invoke_cs_api" host="api-sys.cambridgesatchel.io"
 			port="443">
 			<http:success-status-code-validator
 				values="200,202,204" />
 		</http:request>
-		<logger message="response #[message.inboundProperties]" level="INFO"
+		<logger message="#[logOut('output from the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+        <logger message="response #[message.inboundProperties]" level="INFO"
 			doc:name="Logger" />
 			
 		<logger
@@ -73,7 +76,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 		<choice-exception-strategy doc:name="Choice Exception Strategy">
 			<catch-exception-strategy doc:name="default">
-				<logger message="Handle default exception" level="ERROR"
+				<logger message="#[logExc('a exception occured when trying to retrieve and update inventory from seko')]" level="ERROR"
 					category="${logger.cs-inventory-integration-error}" doc:name="Logger" />
 			</catch-exception-strategy>
 		</choice-exception-strategy>
@@ -85,6 +88,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 				idExpression="#[message.id]" maxRedeliveryCount="${etc.retryable.exc.max.redeliveries}" />
 			<vm:transaction action="ALWAYS_BEGIN" />
 		</vm:inbound-endpoint>
+        <flow-ref name="entry-log" doc:name="entry-log"/>
 		<logger
 			message="---------- Position: Entry || subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
@@ -116,11 +120,11 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 				maxRedeliveryAttempts="${etc.invoke.retryable.exc.max.redeliveries}"
 				doc:name="retryable audit exception">
 				<logger
-					message="#[logIn('a retryable exception occurred trying to call elasticsearch to log for egiftcard')]"
+					message="#[logExc('a retryable exception occurred trying to call elasticsearch to log for egiftcard')]"
 					level="ERROR" category="${logger.cs-inventory-integration}" doc:name="retryable exception" />
 				<on-redelivery-attempts-exceeded>
 					<logger
-						message="#[logIn('giving up after too many retryable exceptions occurred trying to log to elasticsearch')]"
+						message="#[logExc('giving up after too many retryable exceptions occurred trying to log to elasticsearch')]"
 						level="ERROR" category="${logger.cs-inventory-integration}" doc:name="giving up retrying" />
 				</on-redelivery-attempts-exceeded>
 			</rollback-exception-strategy>
@@ -130,12 +134,29 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 	<flow name="invoke_retrieveInventory">
 		<http:listener config-ref="def_http_listener" path="/seko"
 			doc:name="HTTP" />
+        <flow-ref name="entry-log" doc:name="entry-log"/>
 		<flow-ref name="retrieveinventory" doc:name="retrieveinventory-seko" />
 		<flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" />
-
+<choice-exception-strategy doc:name="Choice Exception Strategy">
+			<catch-exception-strategy doc:name="default">
+				<logger message="#[logExc('a exception occured when trying to retrieve and update inventory from seko')]" level="ERROR"
+					category="${logger.cs-inventory-integration-error}" doc:name="Logger" />
+			</catch-exception-strategy>
+		</choice-exception-strategy>
 	</flow>
+	
+	
+	<!-- #ShameCode - This bit of code needs to be replaced with a groovy init script . Groovy is not able to recognise properties loaded through jasypt property configurer-->
+	
+	
+    <sub-flow name="seko_init_params">
+        <set-variable variableName="seko_authKey" value="${seko_authKey}" doc:name="seko_authkey_init"/>
+        <set-variable variableName="seko_password" value="${seko_password}" doc:name="seko_password_init"/>
+    </sub-flow>
+
 
 	<sub-flow name="map-to-cs-api">
+        <flow-ref name="entry-log" doc:name="Flow Reference"/>
 		<logger
 			message="---------- Position: Entry || subflow : map-to-cs-api || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
@@ -156,6 +177,8 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 		
 	</sub-flow>
 	<sub-flow name="retrieveinventory">
+        <flow-ref name="entry-log" doc:name="entry-log"/>
+        <flow-ref name="seko_init_params" doc:name="seko_init_params"/>
 		<logger
 			message="---------- Position: Entry || subflow : retrieveinventory || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
@@ -165,12 +188,13 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 
 		<parse-template location="./samples/DcsWebService.xml"
 			doc:name="Parse Template" />
+        <logger message="#[logIn('Payload invocation to Seko')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
 		<http:request config-ref="def_http_request_config"
 			path="/dispwms_dcs/dcswebservice/DcsWebService" method="POST"
 			doc:name="HTTP" host="usp.sekosynergy.co.uk" port="8880" />
 		<byte-array-to-string-transformer
 			doc:name="Byte Array to String" />
-
+		<logger message="#[logIn('Seko Response')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
 		<logger
 			message="---------- Position: Exit || subflow : retrieveinventory || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />

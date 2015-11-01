@@ -3,7 +3,7 @@
    <soapenv:Body>
       <wsdl:runUserQuery>
          <InterfaceSettings_1>
-            <authenticationKey>#[svcProp("authKey")]</authenticationKey>
+            <authenticationKey>#[flowVars.seko_authKey]</authenticationKey>
 				<clientId>#[svcProp("clientId")]</clientId>
 				<expirationSecs>#[svcProp("expiryTime")]</expirationSecs>
 				<identifier>#[svcProp("identifier")]</identifier>
@@ -11,7 +11,7 @@
 				<locality></locality>
 				<nlsCalendar>Gregorian</nlsCalendar>
 				<oracleDateFormat>yyyymmddhh24miss</oracleDateFormat>
-				<password>#[svcProp("password")]</password>
+				<password>#[flowVars.seko_password]</password>
 				<referenceId>SEKO</referenceId>
 				<serialiseMergeAccess>false</serialiseMergeAccess>
 				<siteId>#[svcProp("siteId")]</siteId>
