@@ -39,8 +39,12 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 	<http:request-config name="cs_http_request_config"
 		doc:name="HTTP Request Configuration" protocol="HTTPS">
+		
+		
+		<!-- #Shame Code - pre-emptive parameter does not exist in 3.6 - when we upgrade to 3.6 use this and uncomment the Auth header part
+		
 		<http:basic-authentication username="${cs_user}"
-			password="${cs_password}" />
+			password="${cs_password}" preemptive="true"/>  -->
 		<tls:context>
 			<tls:trust-store path="./security/cs_truststore.jks"
 				password="password" type="jks" />
@@ -52,35 +56,47 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="SECONDS"/>
 			<flow-ref name="retrieveinventory" doc:name="retrieveinventory" />
 		</poll>
-        <flow-ref name="entry-log" doc:name="entry-log"/>
+       	<vm:outbound-endpoint ref="vm-cs-requ-ep"
+			doc:name="VM_CS_INVENTORY" />
+	</flow>
+	
+	<flow name="update-cs-inventory-api">
+		<vm:inbound-endpoint ref="vm-cs-requ-ep" doc:name="VM_CS_INVENTORY">
+			<idempotent-redelivery-policy
+				idExpression="#[message.id]" maxRedeliveryCount="${cs.retryable.exc.max.redeliveries}" />
+			<vm:transaction action="ALWAYS_BEGIN" />
+		</vm:inbound-endpoint>
+		
+	 <flow-ref name="entry-log" doc:name="entry-log"/>
         <logger message="---------- Position: Entry ||subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
+        <flow-ref name="cs_init_params" doc:name="cs_init_params"/>
 		<flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" />
 		<vm:outbound-endpoint ref="vm-es-requ-ep"
 			doc:name="VM_ELK" />
-        <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+        <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Debug_CS_Request"/>
 		<http:request config-ref="cs_http_request_config" path="/api/v1/stock/quantities"
 			method="POST" doc:name="invoke_cs_api" host="api-sys.cambridgesatchel.io"
 			port="443">
+			<http:request-builder>
+                <http:header headerName="Authorization" value="${cs_basicauth}"/>
+                </http:request-builder>
 			<http:success-status-code-validator
 				values="200,202,204" />
 		</http:request>
-		<logger message="#[logOut('output from the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
-        <logger message="response #[message.inboundProperties]" level="INFO"
-			doc:name="Logger" />
+		<logger message="#[logOut('output from the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Debug_CS_Response"/>
 			
 		<logger
-			message="---------- Position: Exit || subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]"
+			message="---------- Position: Exit || subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || InboundProperties : #[message.inboundProperties]"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
-		<!-- <quartz:inbound-endpoint jobName="triggerJob" repeatInterval="5000" 
-			cronExpression="0 0 10 ? * WED" doc:name="Quartz"> -->
-
-		<choice-exception-strategy doc:name="Choice Exception Strategy">
-			<catch-exception-strategy doc:name="default">
+		
+		<catch-exception-strategy doc:name="Catch_Exception">
 				<logger message="#[logExc('a exception occured when trying to retrieve and update inventory from seko')]" level="ERROR"
 					category="${logger.cs-inventory-integration-error}" doc:name="Logger" />
-			</catch-exception-strategy>
-		</choice-exception-strategy>
+		</catch-exception-strategy>
+	
 	</flow>
+	
+	
 	<flow name="log_in_elasticsearch" processingStrategy="synchronous">
 
 		<vm:inbound-endpoint ref="vm-es-requ-ep" doc:name="VM elk requests">
@@ -104,17 +120,15 @@ jsonMap.timestamp=new Date().format("yyyy-MM-dd'T'HH:mm:ss");
 
 payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
         </scripting:component>
-
-
-		<http:request config-ref="http_etc_shared"
-			path="cs-inventory-#[server.dateTime.year].#[server.dateTime.format('MM')].#[server.dateTime.format('dd')]/inventory/#[function:uuid]"
-			method="PUT" doc:name="etc_log" host="${etc.host}" port="${etc.port}">
-
-		</http:request>
-
-		<logger
-			message="---------- Position: Exit || subflow : Null || FlowName : #[flow.name] || MessageId:  || elasticsearchstatuscode : #[message.InboundProperties.'http.status']"
-			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
+        <choice doc:name="Choice">
+            <when expression="#[ '${elk}' == 'Y']">
+                <http:request config-ref="http_etc_shared" path="cs-inventory-#[server.dateTime.year].#[server.dateTime.format('MM')].#[server.dateTime.format('dd')]/inventory/#[function:uuid]" method="PUT" host="${etc.host}" port="${etc.port}" doc:name="etc_log"/>
+                <logger message="---------- Position: Exit || subflow : Null || FlowName : #[flow.name] || MessageId:  || elasticsearchstatuscode : #[message.InboundProperties.'http.status']" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
+            </when>
+            <otherwise>
+            	<logger message="---------- Position: Exit || subflow : Null || FlowName : #[flow.name] || MessageId:  || Not Logged To ELK || Payload : #[payload]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
+            </otherwise>
+        </choice>
 		<choice-exception-strategy doc:name="etc-exc-strategy">
 			<rollback-exception-strategy when="true"
 				maxRedeliveryAttempts="${etc.invoke.retryable.exc.max.redeliveries}"
@@ -146,14 +160,27 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 	</flow>
 	
 	
-	<!-- #ShameCode - This bit of code needs to be replaced with a groovy init script . Groovy is not able to recognise properties loaded through jasypt property configurer-->
+	<!-- #Shame Code - This bit of code needs to be replaced with a groovy init script . Groovy is not able to recognise properties loaded through jasypt property configurer-->
 	
 	
     <sub-flow name="seko_init_params">
+    
+    	<set-session-variable variableName="runEnv" value="${runEnv}" doc:name="Set_Run_environment" />
         <set-variable variableName="seko_authKey" value="${seko_authKey}" doc:name="seko_authkey_init"/>
         <set-variable variableName="seko_password" value="${seko_password}" doc:name="seko_password_init"/>
+       
+    </sub-flow>
+    
+     <sub-flow name="cs_init_params">
+    
+    	<set-session-variable variableName="runEnv" value="${runEnv}" doc:name="Set_Run_environment" />
+        <set-session-variable variableName="locationId" value="${sekoLocation}" doc:name="Set_Seko_Location" />
+        
     </sub-flow>
 
+
+	<!--  End of #Shame Code -->
+		
 
 	<sub-flow name="map-to-cs-api">
         <flow-ref name="entry-log" doc:name="Flow Reference"/>
@@ -164,7 +191,7 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 			maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT">
 			<mulexml:context-property key="requestId"
 				value="#[function:uuid]"></mulexml:context-property>
-
+            <mulexml:context-property key="sekoLocation" value="#[sessionVars.locationId]"/>
 		</mulexml:xslt-transformer>
 		<json:xml-to-json-transformer doc:name="XML to JSON" />
 		<scripting:component doc:name="Groovy">
@@ -183,8 +210,7 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 			message="---------- Position: Entry || subflow : retrieveinventory || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
 		
-		<set-session-variable variableName="runEnv"
-			value="${runEnv}" doc:name="Session Variable" />
+		
 
 		<parse-template location="./samples/DcsWebService.xml"
 			doc:name="Parse Template" />

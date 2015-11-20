@@ -25,7 +25,7 @@ oldUpdateList.each{
 }
 jsonMap.updates=stockUpdateList;
 def user =[:];
-user.name="Steven Gonsalvez";
+user.name="Seko Inventory Integration";
 jsonMap.user=user;
 
 payload = JsonOutput.toJson(jsonMap)

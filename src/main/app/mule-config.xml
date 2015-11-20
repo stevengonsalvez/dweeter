@@ -135,6 +135,15 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 
 
 	<vm:connector name="vm-conn-es-shared"
+		validateConnections="true" doc:name="VM Connector for es">
+		<core:receiver-threading-profile
+			poolExhaustedAction="WAIT" maxThreadsActive="${vm.conn.es.max.threads.active}"
+			maxThreadsIdle="${vm.conn.es.max.threads.idle}" />
+		<vm:queue-profile maxOutstandingMessages="${vm.es.queue.size}">
+			<core:default-in-memory-queue-store />
+		</vm:queue-profile>
+	</vm:connector>
+	<vm:connector name="vm-conn-cs-shared"
 		validateConnections="true" doc:name="VM Connector for cs">
 		<core:receiver-threading-profile
 			poolExhaustedAction="WAIT" maxThreadsActive="${vm.conn.cs.max.threads.active}"
@@ -143,9 +152,11 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 			<core:default-in-memory-queue-store />
 		</vm:queue-profile>
 	</vm:connector>
+	
 	<vm:endpoint name="vm-es-requ-ep" exchange-pattern="one-way"
 		path="vm-audit-requ" connector-ref="vm-conn-es-shared" doc:name="shared es requests queue" />
-
+	<vm:endpoint name="vm-cs-requ-ep" exchange-pattern="one-way"
+		path="vm-cs-requ" connector-ref="vm-conn-cs-shared" doc:name="shared es requests queue" />
 
 	<!-- call this flow from all flows in your app which communicate outside 
 		that app. Call it immediately after entering such a flow, then call audit-common. -->
