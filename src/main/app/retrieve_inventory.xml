@@ -74,8 +74,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 		<vm:outbound-endpoint ref="vm-es-requ-ep"
 			doc:name="VM_ELK" />
         <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Debug_CS_Request"/>
-		<http:request config-ref="cs_http_request_config" path="/api/v1/stock/quantities"
-			method="POST" doc:name="invoke_cs_api" host="api-sys.cambridgesatchel.io"
+		<http:request config-ref="cs_http_request_config" path="${cs_url}"
+			method="POST" doc:name="invoke_cs_api" host="${cs_host}"
 			port="443">
 			<http:request-builder>
                 <http:header headerName="Authorization" value="${cs_basicauth}"/>
