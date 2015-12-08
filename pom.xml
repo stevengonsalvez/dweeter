@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cs.mule.app</groupId>
@@ -28,15 +27,17 @@
 
 		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml</soapui.projectFile>
 		<soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
-		<soapui.endpoint.username />
-		<soapui.endpoint.password />
+		<soapui.endpoint.username/>
+		<soapui.endpoint.password/>
 
 
-	</properties>
+	<munit.version>1.0.0</munit.version>
+    <mule.munit.support.version>3.6.0</mule.munit.support.version>
+    </properties>
 
 	<build>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.3.5</version>
@@ -44,9 +45,9 @@
 					<imageName>stevengonsalvez/csctest:0.1</imageName>
 					<baseImage>stevengonsalvez/mvnmuleelastic:2.0</baseImage>
 					<dockerDirectory>.</dockerDirectory>
-					<!-- <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint> -->
-					<!-- copy the service's jar file from target into the root directory 
-						of the image -->
+					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					copy the service's jar file from target into the root directory 
+						of the image
 					<resources>
 						<resource>
 							<targetPath>/opt/mule/apps</targetPath>
@@ -55,7 +56,7 @@
 						</resource>
 					</resources>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.mule.tools.maven</groupId>
 				<artifactId>mule-app-maven-plugin</artifactId>
@@ -123,13 +124,15 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>add-db2-jars</id>
+						<id>add-jasypt-jars</id>
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<zip destfile="${project.build.directory}/${project.build.finalName}.zip"
-									update="true">
-									<zipfileset dir="${project.basedir}/lib" prefix="lib" />
+								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
+									<zipfileset dir="${project.basedir}/lib" prefix="lib"/>
+								</zip>
+								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
+									<zipfileset dir="${project.basedir}/src/main/app/lib" prefix="lib" />
 								</zip>
 							</tasks>
 						</configuration>
@@ -137,7 +140,7 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-					<execution>
+					<!-- <execution>
 						<id>mule-deploy</id>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -146,19 +149,12 @@
 						<configuration>
 							<skip>true</skip>
 							<tasks unless="maven.test.skip">
-								<sshexec
-									command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* "
-									failonerror="true" host="54.172.204.35" password="mule" trust="true"
-									username="mule" />
-								<scp failonerror="true"
-									file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@54.172.204.35:/tmp"
-									trust="true" />
-								<sshexec command="cp /tmp/order-api* /opt/mule/apps"
-									failonerror="true" host="54.172.204.35" password="mule"
-									username="mule" />
+								<sshexec command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* " failonerror="true" host="54.172.204.35" password="mule" trust="true" username="mule"/>
+								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@54.172.204.35:/tmp" trust="true"/>
+								<sshexec command="cp /tmp/order-api* /opt/mule/apps" failonerror="true" host="54.172.204.35" password="mule" username="mule"/>
 							</tasks>
 						</configuration>
-					</execution>
+					</execution> -->
 				</executions>
 				<dependencies>
 					<dependency>
@@ -213,8 +209,30 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-		</plugins>
-	</build>
+		<plugin>
+                <groupId>com.mulesoft.munit.tools</groupId>
+                <artifactId>munit-maven-plugin</artifactId>
+                <version>${munit.version}</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+	<testResources>
+            <testResource>
+                <directory>src/test/munit</directory>
+            </testResource>
+        <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 
 	<!-- Mule Dependencies -->
 	<dependencies>
@@ -328,6 +346,7 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- commented this out as #shame , because this is not getting added , manually added jars.-->
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt-spring3</artifactId>
@@ -339,9 +358,21 @@
 			<artifactId>jasypt</artifactId>
 			<version>1.9.2</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> 
 
-	</dependencies>
+	<dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>mule-munit-support</artifactId>
+            <version>${mule.munit.support.version}</version>
+            <scope>test</scope>
+        </dependency>
+    <dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>munit-runner</artifactId>
+            <version>${munit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>
