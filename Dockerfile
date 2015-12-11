@@ -9,5 +9,5 @@ ENV MULE_ENCRYPTION_PASSWORD cscpassword
 EXPOSE 8082
 EXPOSE 9200
 
-CMD service elasticsearch start && /opt/mule/bin/mule -D-M-DrunEnv=dev -D-M-DsekoLocation=33 -D-M-Delk=Y
+CMD service elasticsearch start && /opt/mule/bin/mule -M-DrunEnv=dev -M-DsekoLocation=33 -M-Delk=Y
 

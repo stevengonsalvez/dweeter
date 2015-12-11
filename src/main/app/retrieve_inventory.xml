@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file"
+<mule xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp" xmlns:file="http://www.mulesoft.org/schema/mule/file"
 	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
 	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
@@ -20,7 +20,8 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
-http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd">
 	<http:request-config name="def_http_request_config"
 		doc:name="HTTP Request Configuration" />
 	<http:listener-config name="def_http_listener"
@@ -39,6 +40,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 	<http:request-config name="cs_http_request_config"
 		doc:name="HTTP Request Configuration" protocol="HTTPS">
+        <tcp:client-socket-properties connectionTimeout="100000" receiveBufferSize="9000" sendBufferSize="9000"/>
 		
 		
 		<!-- #Shame Code - pre-emptive parameter does not exist in 3.6 - when we upgrade to 3.6 use this and uncomment the Auth header part
@@ -76,7 +78,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Debug_CS_Request"/>
 		<http:request config-ref="cs_http_request_config" path="${cs_url}"
 			method="POST" doc:name="invoke_cs_api" host="${cs_host}"
-			port="443">
+			port="443" responseTimeout="100000">
 			<http:request-builder>
                 <http:header headerName="Authorization" value="${cs_basicauth}"/>
                 </http:request-builder>

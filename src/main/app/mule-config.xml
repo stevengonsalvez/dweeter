@@ -130,7 +130,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 		protocol="HTTP" doc:name="HTTP shared giftcard request connector">
 		<http:basic-authentication username="${etc.username}"
 			password="${etc.password}" />
-		<tcp:client-socket-properties keepAlive="true" />
+		<tcp:client-socket-properties keepAlive="true" connectionTimeout="60000"  sendTcpNoDelay="true"/>
 	</http:request-config>
 
 
