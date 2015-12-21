@@ -20,9 +20,9 @@
 						<name>set</name>
 						<value>
 							<xsl:choose>
-								<xsl:when test="string(number(row[2])) = 'NaN'">0</xsl:when>
+								<xsl:when test="string(number(row[2])) = 'NaN' or starts-with(string(row[2]), '-')">0</xsl:when>
 								<xsl:otherwise>
-									<xsl:number value="row[2]"/>
+									<xsl:value-of select="abs(row[2])"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</value>

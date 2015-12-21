@@ -26,7 +26,15 @@
          <QueryParameters_2>
             <maxRecords>#[svcProp("maxRecords")]</maxRecords>
             <nlsCalendar>Gregorian</nlsCalendar>
-            <query>SELECT              SK.SKU_ID,
+            <query>SELECT              
+                    SKU_ID,
+                    AVAILABLE_UNITS
+                    FROM(SELECT             ROWNUM RN,
+                    SKU_ID,
+                    AVAILABLE_UNITS,
+                    ON_HOLD_UNITS,
+                    ON_PICK_UNITS
+FROM(SELECT  SK.SKU_ID,
                     (SUM(NVL(FTS_QTY,0)*RES.BOX_QTY)-SUM(NVL(ON_PICK,0)*RES.BOX_QTY)) AVAILABLE_UNITS,
                     SUM(NVL(ON_HOLD,0)*RES.BOX_QTY) ON_HOLD_UNITS,
                     SUM(NVL(ON_PICK,0)*RES.BOX_QTY) ON_PICK_UNITS
@@ -127,9 +135,9 @@ GROUP BY            S.CLIENT_ID,
                     TO_NUMBER(CASE WHEN LENGTH(PL.CONFIG_ID) = 6 THEN SUBSTR(PL.CONFIG_ID,1,1) ELSE SUBSTR(PL.CONFIG_ID,1,2) END))RES
 ON                  RES.SKU_ID = SK.SKU_ID
 AND                 RES.CLIENT_ID = SK.CLIENT_ID
-WHERE               SK.CLIENT_ID = 'SATCHEL'  AND SUBSTR(SK.SKU_ID ,1,1) BETWEEN 'A' AND 'R'
+WHERE               SK.CLIENT_ID = 'SATCHEL'
 GROUP BY            SK.SKU_ID
-ORDER BY            SK.SKU_ID</query>
+ORDER BY            SK.SKU_ID)) WHERE  RN BETWEEN #[flowVars.startValue] AND #[flowVars.endValue]</query>
             <timeZoneName></timeZoneName>
          </QueryParameters_2>
       </wsdl:runUserQuery>

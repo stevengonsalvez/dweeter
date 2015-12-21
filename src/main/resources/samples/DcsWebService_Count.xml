@@ -26,10 +26,7 @@
          <QueryParameters_2>
             <maxRecords>#[svcProp("maxRecords")]</maxRecords>
             <nlsCalendar>Gregorian</nlsCalendar>
-            <query>SELECT              SK.SKU_ID,
-                    (SUM(NVL(FTS_QTY,0)*RES.BOX_QTY)-SUM(NVL(ON_PICK,0)*RES.BOX_QTY)) AVAILABLE_UNITS,
-                    SUM(NVL(ON_HOLD,0)*RES.BOX_QTY) ON_HOLD_UNITS,
-                    SUM(NVL(ON_PICK,0)*RES.BOX_QTY) ON_PICK_UNITS
+            <query>SELECT              COUNT(DISTINCT SK.SKU_ID)ROW_COUNT
 FROM                SKU SK
 LEFT JOIN
 (SELECT             S.CLIENT_ID,
@@ -37,7 +34,7 @@ LEFT JOIN
                     S.DESCRIPTION,
                     TO_NUMBER(CASE WHEN LENGTH(I.CONFIG_ID) = 6 THEN SUBSTR(I.CONFIG_ID,1,1) ELSE SUBSTR(I.CONFIG_ID,1,2) END) BOX_QTY,
                     SUM(NVL(I.QTY_ON_HAND,0))FTS_QTY,
-                    0 ON_HOLD,
+                   0 ON_HOLD,
                     0 ON_PICK,
                     0 DUE_IN
 FROM                SKU S
@@ -127,9 +124,7 @@ GROUP BY            S.CLIENT_ID,
                     TO_NUMBER(CASE WHEN LENGTH(PL.CONFIG_ID) = 6 THEN SUBSTR(PL.CONFIG_ID,1,1) ELSE SUBSTR(PL.CONFIG_ID,1,2) END))RES
 ON                  RES.SKU_ID = SK.SKU_ID
 AND                 RES.CLIENT_ID = SK.CLIENT_ID
-WHERE               SK.CLIENT_ID = 'SATCHEL'  AND SUBSTR(SK.SKU_ID ,1,1) BETWEEN 'A' AND 'R'
-GROUP BY            SK.SKU_ID
-ORDER BY            SK.SKU_ID</query>
+WHERE               SK.CLIENT_ID = 'SATCHEL'</query>
             <timeZoneName></timeZoneName>
          </QueryParameters_2>
       </wsdl:runUserQuery>

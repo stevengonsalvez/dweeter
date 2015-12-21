@@ -24,8 +24,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd">
 	<http:request-config name="def_http_request_config"
 		doc:name="HTTP Request Configuration" />
-	<http:listener-config name="def_http_listener"
-		host="0.0.0.0" port="8082" basePath="/inventory" doc:name="HTTP Listener Configuration" />
+	<!-- <http:listener-config name="def_http_listener"
+		host="0.0.0.0" port="8082" basePath="inventory" doc:name="HTTP Listener Configuration" /> -->
 	<!-- <ws:consumer-config name="sekoServiceConsumer" wsdlLocation="./wsdl/DcsWebService.wsdl" 
 		service="DcsWebServiceService" port="DcsWebServicePort" serviceAddress="http://usp.sekosynergy.co.uk:8880/dispwms_dcs/dcswebservice/DcsWebService" 
 		doc:name="Web Service Consumer"/> -->
@@ -40,7 +40,7 @@ http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/
 
 	<http:request-config name="cs_http_request_config"
 		doc:name="HTTP Request Configuration" protocol="HTTPS">
-        <tcp:client-socket-properties connectionTimeout="100000" receiveBufferSize="9000" sendBufferSize="9000"/>
+        <tcp:client-socket-properties connectionTimeout="120000" receiveBufferSize="9000" sendBufferSize="9000"/>
 		
 		
 		<!-- #Shame Code - pre-emptive parameter does not exist in 3.6 - when we upgrade to 3.6 use this and uncomment the Auth header part
@@ -52,14 +52,15 @@ http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/
 				password="password" type="jks" />
 		</tls:context>
 	</http:request-config>
+    <http:listener-config name="cs_http_listener" host="0.0.0.0" port="8082" doc:name="HTTP Listener Configuration"/>
+    
 
 	<flow name="time-trigger-synch">
 		<poll doc:name="Poll">
 			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="SECONDS"/>
-			<flow-ref name="retrieveinventory" doc:name="retrieveinventory" />
+			<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory_count" />
 		</poll>
-       	<vm:outbound-endpoint ref="vm-cs-requ-ep"
-			doc:name="VM_CS_INVENTORY" />
+		<logger message="---------- Position: Exit ||subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
 	</flow>
 	
 	<flow name="update-cs-inventory-api">
@@ -78,7 +79,7 @@ http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/
         <logger message="#[logIn('Invoking the CS API')] " level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Debug_CS_Request"/>
 		<http:request config-ref="cs_http_request_config" path="${cs_url}"
 			method="POST" doc:name="invoke_cs_api" host="${cs_host}"
-			port="443" responseTimeout="100000">
+			port="443" responseTimeout="100000" requestStreamingMode="ALWAYS">
 			<http:request-builder>
                 <http:header headerName="Authorization" value="${cs_basicauth}"/>
                 </http:request-builder>
@@ -147,12 +148,13 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 		</choice-exception-strategy>
 	</flow>
 
-	<flow name="invoke_retrieveInventory">
-		<http:listener config-ref="def_http_listener" path="/seko"
+	<flow name="invoke_retrieveInventory" processingStrategy="synchronous">
+		<http:listener config-ref="cs_http_listener" path="/seko"
 			doc:name="HTTP" />
         <flow-ref name="entry-log" doc:name="entry-log"/>
-		<flow-ref name="retrieveinventory" doc:name="retrieveinventory-seko" />
-		<flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" />
+        <set-session-variable variableName="updateCS" value="#[message.inboundProperties.'http.query.params'.updateCS]" doc:name="updateCS"/>
+		<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory-seko" />
+		<!-- <flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" /> -->
 <choice-exception-strategy doc:name="Choice Exception Strategy">
 			<catch-exception-strategy doc:name="default">
 				<logger message="#[logExc('a exception occured when trying to retrieve and update inventory from seko')]" level="ERROR"
@@ -205,16 +207,17 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
 		
 	</sub-flow>
-	<sub-flow name="retrieveinventory">
+	<sub-flow name="retrieveinventory_count">
         <flow-ref name="entry-log" doc:name="entry-log"/>
         <flow-ref name="seko_init_params" doc:name="seko_init_params"/>
+        <flow-ref name="cs_init_params" doc:name="cs_init_params"/>
 		<logger
-			message="---------- Position: Entry || subflow : retrieveinventory || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
+			message="---------- Position: Entry || subflow : retrieveinventory_count || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
 		
 		
 
-		<parse-template location="./samples/DcsWebService.xml"
+		<parse-template location="./samples/DcsWebService_Count.xml"
 			doc:name="Parse Template" />
         <logger message="#[logIn('Payload invocation to Seko')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
 		<http:request config-ref="def_http_request_config"
@@ -222,12 +225,58 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 			doc:name="HTTP" host="usp.sekosynergy.co.uk" port="8880" />
 		<byte-array-to-string-transformer
 			doc:name="Byte Array to String" />
-		<logger message="#[logIn('Seko Response')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+        <logger message="#[logOut('Seko Response for inventory count')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+        <set-session-variable variableName="SkuCount" value="#[xpath3('*/*/*/*/*/row', payload)]" doc:name="InventoyCount_sessionVariable"/>
+        <set-session-variable variableName="InventoryCount" value="#[((xpath3('*/*/*/*/*/row', payload))/500)+1]" doc:name="InventoryCount"/>
+        <expression-component doc:name="create payload List to iterate"><![CDATA[testList = [];
+
+for (int i =1; i <= sessionVars.InventoryCount; i++) { 
+   testList.add(i);
+    
+}
+
+payload=testList;]]></expression-component>
+        <flow-ref name="retrieve_Inventory" doc:name="Flow Reference"/>
 		<logger
-			message="---------- Position: Exit || subflow : retrieveinventory || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
+			message="---------- Position: Exit || subflow : retrieveinventory_count || FlowName : #[flow.name] ||   Inventory Count : #[sessionVars.InventoryCount]    ||Sku Count : #[sessionVars.SkuCount] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
 			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
 
 
 	</sub-flow>
+    <sub-flow name="retrieve_Inventory">
+        <set-session-variable variableName="responseList" value="#[new java.util.ArrayList()]" doc:name="responseList"/>
+        <foreach collection="#[payload]" doc:name="For Each">
+        	<expression-component doc:name="Expression"><![CDATA[flowVars.endValue = (int)(payload * 500);
+flowVars.startValue = (int)((payload * 500) -499);]]></expression-component>
+			<logger
+			message="---------- Position: Entry || subflow : retrieve_Inventory || FlowName : #[flow.name] ||  iterationNumber : #[counter] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
+			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
+			
+			<parse-template location="./samples/DcsWebService_RowNum.xml"
+			doc:name="Parse Template" />
+        	<logger message="#[logIn('Payload invocation to Seko')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+			<http:request config-ref="def_http_request_config"
+				path="/dispwms_dcs/dcswebservice/DcsWebService" method="POST"
+				doc:name="HTTP" host="usp.sekosynergy.co.uk" port="8880" />
+			<byte-array-to-string-transformer
+					doc:name="Byte Array to String" />
+			<logger message="#[counter] iteration #[logOut('Seko Response for inventory for iteration')]" level="DEBUG" category="${logger.cs-inventory-integration}" doc:name="Logger"/>
+            <choice doc:name="Choice">
+                <when expression="#[sessionVars.updateCS == 'N']">
+                   <logger
+			message="---------- Position: Entry-Choice-NoCSUpdate || subflow : retrieve_Inventory || FlowName : #[flow.name] ||  iterationNumber : #[counter] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
+			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
+                </when>
+                <otherwise >
+                    <logger
+			message="---------- Position: Entry-Choice-UpdateCS || subflow : retrieve_Inventory || FlowName : #[flow.name] ||  iterationNumber : #[counter] || MessageId: #[sessionVars.messageId] || env : ${runEnv}"
+			level="INFO" doc:name="info log" category="${logger.cs-inventory-integration}" />
+                    	<vm:outbound-endpoint ref="vm-cs-requ-ep"
+			doc:name="VM_CS_INVENTORY" />
+                </otherwise>
+            </choice>
+		
+        </foreach>
+    </sub-flow>
 
 </mule>

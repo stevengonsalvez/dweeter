@@ -3,33 +3,30 @@
    <soapenv:Body>
       <wsdl:runUserQuery>
          <InterfaceSettings_1>
-            <authenticationKey>#[flowVars.seko_authKey]</authenticationKey>
-				<clientId>#[svcProp("clientId")]</clientId>
-				<expirationSecs>#[svcProp("expiryTime")]</expirationSecs>
-				<identifier>#[svcProp("identifier")]</identifier>
-				<language>#[svcProp("language")]</language>
+            <authenticationKey>4vbl2afvtpde73xpz9c6fbhnddb6b5zrdlad663jjj94fnf218b4</authenticationKey>
+				<clientId>SATCHEL</clientId>
+				<expirationSecs>3600</expirationSecs>
+				<identifier>CSC</identifier>
+				<language>EN_GB</language>
 				<locality></locality>
 				<nlsCalendar>Gregorian</nlsCalendar>
 				<oracleDateFormat>yyyymmddhh24miss</oracleDateFormat>
-				<password>#[flowVars.seko_password]</password>
+				<password>fa065a214a9d4b8e95be6878adF5692</password>
 				<referenceId>SEKO</referenceId>
 				<serialiseMergeAccess>false</serialiseMergeAccess>
-				<siteId>#[svcProp("siteId")]</siteId>
+				<siteId>CROWLANE</siteId>
 				<sqlTracing>false</sqlTracing>
 				<stationId>WEB</stationId>
 				<testMode>false</testMode>
 				<timeOutSecs>300</timeOutSecs>
 				<traceLevel>0</traceLevel>
 				<transportUrl></transportUrl>
-				<userId>#[svcProp("userId")]</userId>
+				<userId>USPAPI</userId>
          </InterfaceSettings_1>
          <QueryParameters_2>
-            <maxRecords>#[svcProp("maxRecords")]</maxRecords>
+            <maxRecords>1000</maxRecords>
             <nlsCalendar>Gregorian</nlsCalendar>
-            <query>SELECT              SK.SKU_ID,
-                    (SUM(NVL(FTS_QTY,0)*RES.BOX_QTY)-SUM(NVL(ON_PICK,0)*RES.BOX_QTY)) AVAILABLE_UNITS,
-                    SUM(NVL(ON_HOLD,0)*RES.BOX_QTY) ON_HOLD_UNITS,
-                    SUM(NVL(ON_PICK,0)*RES.BOX_QTY) ON_PICK_UNITS
+            <query>SELECT              COUNT(DISTINCT SK.SKU_ID)ROW_COUNT
 FROM                SKU SK
 LEFT JOIN
 (SELECT             S.CLIENT_ID,
@@ -37,7 +34,7 @@ LEFT JOIN
                     S.DESCRIPTION,
                     TO_NUMBER(CASE WHEN LENGTH(I.CONFIG_ID) = 6 THEN SUBSTR(I.CONFIG_ID,1,1) ELSE SUBSTR(I.CONFIG_ID,1,2) END) BOX_QTY,
                     SUM(NVL(I.QTY_ON_HAND,0))FTS_QTY,
-                    0 ON_HOLD,
+                   0 ON_HOLD,
                     0 ON_PICK,
                     0 DUE_IN
 FROM                SKU S
@@ -127,9 +124,7 @@ GROUP BY            S.CLIENT_ID,
                     TO_NUMBER(CASE WHEN LENGTH(PL.CONFIG_ID) = 6 THEN SUBSTR(PL.CONFIG_ID,1,1) ELSE SUBSTR(PL.CONFIG_ID,1,2) END))RES
 ON                  RES.SKU_ID = SK.SKU_ID
 AND                 RES.CLIENT_ID = SK.CLIENT_ID
-WHERE               SK.CLIENT_ID = 'SATCHEL'  AND SUBSTR(SK.SKU_ID ,1,1) BETWEEN 'A' AND 'R'
-GROUP BY            SK.SKU_ID
-ORDER BY            SK.SKU_ID</query>
+WHERE               SK.CLIENT_ID = 'SATCHEL'</query>
             <timeZoneName></timeZoneName>
          </QueryParameters_2>
       </wsdl:runUserQuery>
