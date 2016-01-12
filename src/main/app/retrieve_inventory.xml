@@ -149,11 +149,12 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 	</flow>
 
 	<flow name="invoke_retrieveInventory" processingStrategy="synchronous">
-		<http:listener config-ref="cs_http_listener" path="/seko"
+		<http:listener config-ref="cs_http_listener" path="/inventory/seko"
 			doc:name="HTTP" />
         <flow-ref name="entry-log" doc:name="entry-log"/>
         <set-session-variable variableName="updateCS" value="#[message.inboundProperties.'http.query.params'.updateCS]" doc:name="updateCS"/>
 		<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory-seko" />
+        <set-payload value="&lt;status&gt;success&lt;/status&gt;" doc:name="Set Payload"/>
 		<!-- <flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" /> -->
 <choice-exception-strategy doc:name="Choice Exception Strategy">
 			<catch-exception-strategy doc:name="default">
