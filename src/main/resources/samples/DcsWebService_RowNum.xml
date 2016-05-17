@@ -35,9 +35,9 @@
                     ON_HOLD_UNITS,
                     ON_PICK_UNITS
 FROM(SELECT  SK.SKU_ID,
-                    (SUM(NVL(FTS_QTY,0)*RES.BOX_QTY)-SUM(NVL(ON_PICK,0)*RES.BOX_QTY)) AVAILABLE_UNITS,
-                    SUM(NVL(ON_HOLD,0)*RES.BOX_QTY) ON_HOLD_UNITS,
-                    SUM(NVL(ON_PICK,0)*RES.BOX_QTY) ON_PICK_UNITS
+                    (SUM(NVL(FTS_QTY,0))-SUM(NVL(ON_PICK,0))) AVAILABLE_UNITS,
+                    SUM(NVL(ON_HOLD,0)) ON_HOLD_UNITS,
+                    SUM(NVL(ON_PICK,0)) ON_PICK_UNITS
 FROM                SKU SK
 LEFT JOIN
 (SELECT             S.CLIENT_ID,
