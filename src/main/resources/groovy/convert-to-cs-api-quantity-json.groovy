@@ -11,6 +11,8 @@ def stockUpdateList = new java.util.ArrayList();
 
 
 oldUpdateList.each{
+    
+if ((it).productSkuNumber != "P2P-A" ){
     def stockNewUpdate = [:];
     stockNewUpdate.productSkuNumber = (it).productSkuNumber;
     stockNewUpdate.locationId = (it).locationId.toInteger();
@@ -21,7 +23,7 @@ oldUpdateList.each{
     stockNewUpdate.reasonCode= (it).reasonCode;
     stockNewUpdate.userNote= (it).userNote;
     stockUpdateList.add(stockNewUpdate);
-
+}
 }
 jsonMap.updates=stockUpdateList;
 def user =[:];

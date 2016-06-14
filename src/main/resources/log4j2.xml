@@ -20,7 +20,7 @@
 		</RollingFile>
 
  		<RollingFile name="AlertsLog" fileName="${sys:mule.home}/logs/cs-integration-alerts.log"
- 			filePattern="${sys:mule.home}/logs/cs-integration-%d{MM-dd-yyyy}-%i.log">
+ 			filePattern="${sys:mule.home}/logs/cs-integration-%d{MM-dd-yyyy}-alerts-%i.log">
 			<PatternLayout>
 			  <Pattern>%X{Tracking_Id} %d{ISO8601} %-5p [%t] [%F:%L] - %m%n</Pattern>
 			</PatternLayout>
@@ -32,8 +32,8 @@
 		</RollingFile>
 		
 		<Syslog name="SysLog" format="RFC5424" host="localhost" port="514"
-            protocol="UDP" appName="flex-order-hub" mdcId="mdc" includeMDC="true"
-            facility="local1" newLine="true" messageId="Alert" id="flex-order-hub" />
+            protocol="UDP" appName="cs-inventoryintegration" mdcId="mdc" includeMDC="true"
+            facility="local1" newLine="true" messageId="Alert" id="cs-inventoryintegration" />
            
     	
 	</Appenders>
