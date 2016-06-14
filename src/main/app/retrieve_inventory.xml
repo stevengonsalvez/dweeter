@@ -57,7 +57,7 @@ http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/
 
 	<flow name="time-trigger-synch">
 		<poll doc:name="Poll">
-			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="SECONDS"/>
+			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="MINUTES"/>
 			<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory_count" />
 		</poll>
 		<logger message="---------- Position: Exit ||subflow : Null || FlowName : #[flow.name] || MessageId: #[sessionVars.messageId]" level="INFO" category="${logger.cs-inventory-integration}" doc:name="info log"/>
@@ -153,7 +153,7 @@ payload = JsonOutput.toJson(jsonMap);]]></scripting:script>
 			doc:name="HTTP" />
         <flow-ref name="entry-log" doc:name="entry-log"/>
         <set-session-variable variableName="updateCS" value="#[message.inboundProperties.'http.query.params'.updateCS]" doc:name="updateCS"/>
-		<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory-seko" />
+<!-- 		<flow-ref name="retrieveinventory_count" doc:name="retrieveinventory-seko" /> -->
         <set-payload value="&lt;status&gt;success&lt;/status&gt;" doc:name="Set Payload"/>
 		<!-- <flow-ref name="map-to-cs-api" doc:name="map-to-cs-api" /> -->
 <choice-exception-strategy doc:name="Choice Exception Strategy">
