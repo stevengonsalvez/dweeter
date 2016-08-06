@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+    
+    <context:property-placeholder location="classpath:application.properties" />
+    
+    
+    <http:request-config name="http_etc_shared" host="${ELASTIC_HOST}" port="${ELASTIC_PORT}" doc:name="HTTP shared elastic connector">
+		<tcp:client-socket-properties keepAlive="true" connectionTimeout="120000"  />
+	</http:request-config>
+	
+    <http:request-config name="dweet_http_request_config"
+		doc:name="HTTP Request Configuration" basePath="/get/dweets/for/" host="dweet.io" port="80">
+        <tcp:client-socket-properties connectionTimeout="120000" receiveBufferSize="9000" sendBufferSize="9000"/>
+		
+	</http:request-config>
+    <vm:connector name="vm-conn-es-shared"
+		validateConnections="true" doc:name="VM Connector for es">
+		<core:receiver-threading-profile
+			poolExhaustedAction="WAIT" maxThreadsActive="${vm.conn.es.max.threads.active}"
+			maxThreadsIdle="${vm.conn.es.max.threads.idle}" />
+		<vm:queue-profile maxOutstandingMessages="${vm.es.queue.size}">
+			<default-in-memory-queue-store />
+		</vm:queue-profile>
+	</vm:connector>
+	<vm:endpoint name="vm-es-requ-ep" exchange-pattern="one-way"
+		path="vm-audit-requ" connector-ref="vm-conn-es-shared" doc:name="shared es requests queue" />
+    
+    <flow name="time-trigger-synch">
+		<poll doc:name="Poll">
+			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="MINUTES"/>
+			<flow-ref name="dweetieFlow" doc:name="retrieveinventory_count" />
+		</poll>
+		<logger message="Exited from the poller" level="INFO"  doc:name="info log"/>
+	</flow>
+    <flow name="dweetieFlow">
+        <logger message="Entered into the Dweet receiver ${THANG}" level="INFO" doc:name="Logger"/>
+        <message-properties-transformer scope="session" doc:name="Message Properties">
+            <add-message-property key="thang" value="${THANG}"/>
+        </message-properties-transformer>
+        <http:request config-ref="dweet_http_request_config" path="${THANG}" method="GET" doc:name="HTTP" requestStreamingMode="ALWAYS"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy" file="./groovy/bulk.groovy"/>
+        </scripting:component>
+        <logger message="Returned data from ${THANG}" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="http_etc_shared" path="/_bulk" method="POST" doc:name="HTTP"/>
+        <logger message="successfully sent to elastic" level="INFO" doc:name="Logger"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="Something Failed over Here " level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+    
+</mule>

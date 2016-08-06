@@ -2,23 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.cs.mule.app</groupId>
-	<artifactId>cs-integration</artifactId>
+	<groupId>com.mns.mule.app</groupId>
+	<artifactId>dweeter</artifactId>
 	<version>1.0.4-SNAPSHOT</version>
 	<packaging>mule</packaging>
-	<name>cs-seko-integration</name>
 
 	<properties>	
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- for cs: to run on 3.6.1 CE use: -->
-		<mule.version>3.6.1</mule.version>
-		<!-- for cs: to run on 3.6.2 EE use: <mule.version>3.6.2</mule.version> -->
+		<!-- for mns: to run on 3.6.1 CE use: -->
+		<mule.version>3.7.0</mule.version>
+		<!-- for mns: to run on 3.6.2 EE use: <mule.version>3.6.2</mule.version> -->
 		<mule.tools.version>1.0</mule.tools.version>
 
 
-		<!-- fl3x deployment specific properties -->
+		<!-- mns deployment specific properties -->
 		<!-- some of the properties will be overriden in the jenkins configuration 
 			for this job , or could be overriden in the settings.xml -->
 		<skip.deploy.nexus>false</skip.deploy.nexus>
@@ -32,7 +31,7 @@
 
 
 	<munit.version>1.1.0</munit.version>
-    <mule.munit.support.version>3.6.1</mule.munit.support.version>
+    <mule.munit.support.version>3.7.1</mule.munit.support.version>
     </properties>
 
 	<build>
@@ -42,7 +41,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.3.5</version>
 				<configuration>
-					<imageName>stevengonsalvez/csctest:0.1</imageName>
+					<imageName>stevengonsalvez/mnsctest:0.1</imageName>
 					<baseImage>stevengonsalvez/mvnmuleelastic:2.0</baseImage>
 					<dockerDirectory>.</dockerDirectory>
 					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
@@ -71,6 +70,14 @@
 						</inclusion>
 					
                     
+                    <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-extensions-support</artifactId>
+                        </inclusion>
+                    <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-extensions-spring-support</artifactId>
+                        </inclusion>
                     </inclusions>
 				</configuration>
 			</plugin>
@@ -119,7 +126,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- for cs: add the bundled proprietary (non-Maven repo) jars to the 
+			<!-- for mns: add the bundled proprietary (non-Maven repo) jars to the 
 				app zip -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -276,7 +283,7 @@
 			<version>${mule.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- for cs: don't need clover: <dependency> <groupId>com.cloveretl</groupId> 
+		<!-- for mns: don't need clover: <dependency> <groupId>com.cloveretl</groupId> 
 			<artifactId>cloveretl-engine</artifactId> <version>${mule.version}</version> 
 			<scope>test</scope> </dependency> -->
 		<dependency>
@@ -296,7 +303,7 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- for cs from here -->
+		<!-- for mns from here -->
 		<!-- depend on a version of commons-lang that's available both in 3.6.1 
 			CE and 3.6.2 EE: -->
 		<dependency>
@@ -376,6 +383,16 @@
         </dependency>
     
     
+    <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-extensions-support</artifactId>
+            <version>${mule.version}</version>
+        </dependency>
+    <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-extensions-spring-support</artifactId>
+            <version>${mule.version}</version>
+        </dependency>
     </dependencies>
 
 	<repositories>
@@ -438,14 +455,14 @@
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>fl3x.nexus.release</id>
-			<name>fl3x Release Repository</name>
+			<id>mns.nexus.release</id>
+			<name>mns Release Repository</name>
 			<url>http://temp/nexus/content/repositories/mule-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
-			<id>fl3x.nexus.snapshot</id>
-			<name>fl3x Snapshot Repository</name>
+			<id>mns.nexus.snapshot</id>
+			<name>mns Snapshot Repository</name>
 			<url>http://temp/nexus/content/repositories/mule-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
