@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mns.mule.app</groupId>
 	<artifactId>dweeter</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>mule</packaging>
 
 	<properties>	
@@ -128,56 +128,6 @@
 			</plugin>
 			<!-- for mns: add the bundled proprietary (non-Maven repo) jars to the 
 				app zip -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-jasypt-jars</id>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
-								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
-									<zipfileset dir="${project.basedir}/lib" prefix="lib"/>
-								</zip>
-								<zip destfile="${project.build.directory}/${project.build.finalName}.zip" update="true">
-									<zipfileset dir="${project.basedir}/src/main/app/lib" prefix="lib"/>
-								</zip>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<!-- <execution>
-						<id>mule-deploy</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-							<tasks unless="maven.test.skip">
-								<sshexec command="rm -rf /opt/mule/apps/order-api* ;rm -rf /tmp/order-api* " failonerror="true" host="54.172.204.35" password="mule" trust="true" username="mule"/>
-								<scp failonerror="true" file="${project.build.directory}/${build.finalName}.zip" todir="mule:mule@54.172.204.35:/tmp" trust="true"/>
-								<sshexec command="cp /tmp/order-api* /opt/mule/apps" failonerror="true" host="54.172.204.35" password="mule" username="mule"/>
-							</tasks>
-						</configuration>
-					</execution> -->
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>ant</groupId>
-						<artifactId>ant-jsch</artifactId>
-						<version>1.6.5</version>
-					</dependency>
-					<dependency>
-						<groupId>com.jcraft</groupId>
-						<artifactId>jsch</artifactId>
-						<version>0.1.42</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<plugin>
 				<groupId>com.github.redfish4ktc.soapui</groupId>
 				<artifactId>maven-soapui-extension-plugin</artifactId>
