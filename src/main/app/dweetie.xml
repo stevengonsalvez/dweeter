@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
     <context:property-placeholder location="classpath:application.properties" />
     
     
-    <http:request-config name="http_etc_shared" host="${ELASTIC_HOST}" port="${ELASTIC_PORT}" doc:name="HTTP shared elastic connector">
+    <http:request-config name="http_etc_shared" host="#[sessionVars.elastichost]" port="#[sessionVars.elasticport]" doc:name="HTTP shared elastic connector">
 		<tcp:client-socket-properties keepAlive="true" connectionTimeout="120000"  />
 	</http:request-config>
 	
@@ -52,6 +52,8 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
         <logger message="Entered into the Dweet receiver ${THANG}" level="INFO" doc:name="Logger"/>
         <message-properties-transformer scope="session" doc:name="Message Properties">
             <add-message-property key="thang" value="${THANG}"/>
+            <add-message-property key="elasticport" value="${ELASTIC_PORT}"/>
+            <add-message-property key="elastichost" value="${ELASTIC_HOST}"/>
         </message-properties-transformer>
         <http:request config-ref="dweet_http_request_config" path="${THANG}" method="GET" doc:name="HTTP" requestStreamingMode="ALWAYS"/>
         <object-to-string-transformer doc:name="Object to String"/>
@@ -62,7 +64,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
         <http:request config-ref="http_etc_shared" path="/_bulk" method="POST" doc:name="HTTP"/>
         <logger message="successfully sent to elastic" level="INFO" doc:name="Logger"/>
         <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <logger message="Something Failed over Here " level="INFO" doc:name="Logger"/>
+            <logger message="Something Failed over Here  || #[payload] ||  #[exception.getMessage()]" level="INFO" doc:name="Logger"/>
         </catch-exception-strategy>
     </flow>
     
