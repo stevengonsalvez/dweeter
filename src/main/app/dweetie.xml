@@ -48,6 +48,27 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 		</poll>
 		<logger message="Exited from the poller" level="INFO"  doc:name="info log"/>
 	</flow>
+	<flow name="time-trigger-synch1">
+		<poll doc:name="Poll">
+			<fixed-frequency-scheduler frequency="250" timeUnit="MINUTES" />
+			<flow-ref name="dweetieFlow1" doc:name="retrieveinventory_count" />
+		</poll>
+		<logger message="Exited from the poller" level="INFO"  doc:name="info log"/>
+	</flow>
+    <flow name="dweetieFlow1">
+    	<message-properties-transformer scope="session" doc:name="Message Properties">
+            <add-message-property key="thang" value="${THANG}"/>
+            <add-message-property key="elasticport" value="${ELASTIC_PORT}"/>
+            <add-message-property key="elastichost" value="${ELASTIC_HOST}"/>
+        </message-properties-transformer>
+        <parse-template location="./groovy/mapping.json" doc:name="Parse Template"/>
+        <http:request config-ref="http_etc_shared" path="/dweetie" method="PUT" doc:name="HTTP"/>
+        <logger message="mapping created" level="INFO" doc:name="Logger"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <object-to-string-transformer doc:name="Object to String"/>
+            <logger message="Something Failed over Here  || #[message.payloadAs(String)] ||  #[exception.getMessage()]" level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
     <flow name="dweetieFlow">
         <logger message="Entered into the Dweet receiver ${THANG}" level="INFO" doc:name="Logger"/>
         <message-properties-transformer scope="session" doc:name="Message Properties">
@@ -64,7 +85,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
         <http:request config-ref="http_etc_shared" path="/_bulk" method="POST" doc:name="HTTP"/>
         <logger message="successfully sent to elastic" level="INFO" doc:name="Logger"/>
         <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <logger message="Something Failed over Here  || #[payload] ||  #[exception.getMessage()]" level="INFO" doc:name="Logger"/>
+            <logger message="Something Failed over Here  || #[message.payloadAs(String)] ||  #[exception.getMessage()]" level="INFO" doc:name="Logger"/>
         </catch-exception-strategy>
     </flow>
     
