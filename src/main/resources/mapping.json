@@ -1,0 +1,40 @@
+{
+      "mappings": {
+         "imminent-whip": {
+            "properties": {
+               "pin": {
+                  "type" : "geo_point",
+                  "geohash_prefix":     true,
+                  "geohash_precision":  "1km"
+              },
+               "wrapper": {
+                  "properties": {
+                     "content": {
+                        "properties": {
+                           "mouse_x": {
+                              "type": "long"
+                           },
+                           "mouse_y": {
+                              "type": "long"
+                           },
+                           "your_latitude": {
+                              "type": "double"
+                           },
+                           "your_longitude": {
+                              "type": "double"
+                           }
+                        }
+                     },
+                     "created": {
+                        "type": "date",
+                        "format": "strict_date_optional_time||epoch_millis"
+                     },
+                     "thing": {
+                        "type": "string"
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }

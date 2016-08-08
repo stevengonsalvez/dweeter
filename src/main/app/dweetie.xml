@@ -43,7 +43,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
     
     <flow name="time-trigger-synch">
 		<poll doc:name="Poll">
-			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="MINUTES"/>
+			<fixed-frequency-scheduler frequency="${synch.frequency}" timeUnit="SECONDS" startDelay="60"/>
 			<flow-ref name="dweetieFlow" doc:name="retrieveinventory_count" />
 		</poll>
 		<logger message="Exited from the poller" level="INFO"  doc:name="info log"/>
