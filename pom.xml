@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.mns.mule.app</groupId>
+	<groupId>com</groupId>
 	<artifactId>dweeter</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>mule</packaging>
 
-	<properties>	
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
 
 		<!-- for mns: to run on 3.6.1 CE use: -->
 		<mule.version>3.7.0</mule.version>
@@ -22,40 +24,32 @@
 			for this job , or could be overriden in the settings.xml -->
 		<skip.deploy.nexus>false</skip.deploy.nexus>
 		<skip.soapui.test>true</skip.soapui.test>
-		<skip.deploy.ciserver>false</skip.deploy.ciserver>
+		<skip.deploy.ciserver>true</skip.deploy.ciserver>
 
-		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml</soapui.projectFile>
+		<soapui.projectFile>src/test/resources/integtests/soapui-project.xml
+		</soapui.projectFile>
 		<soapui.endpoint.hostname>localhost</soapui.endpoint.hostname>
-		<soapui.endpoint.username/>
-		<soapui.endpoint.password/>
+		<soapui.endpoint.username />
+		<soapui.endpoint.password />
+
+		 
 
 
-	<munit.version>1.1.0</munit.version>
-    <mule.munit.support.version>3.7.1</mule.munit.support.version>
-    </properties>
+
+		<munit.version>1.1.0</munit.version>
+		<mule.munit.support.version>3.7.1</mule.munit.support.version>
+	</properties>
 
 	<build>
 		<plugins>
-			<!-- <plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.3.5</version>
-				<configuration>
-					<imageName>stevengonsalvez/mnsctest:0.1</imageName>
-					<baseImage>stevengonsalvez/mvnmuleelastic:2.0</baseImage>
-					<dockerDirectory>.</dockerDirectory>
-					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-					copy the service's jar file from target into the root directory 
-						of the image
-					<resources>
-						<resource>
-							<targetPath>/opt/mule/apps</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.zip</include>
-						</resource>
-					</resources>
-				</configuration>
-			</plugin> -->
+			<!-- <plugin> <groupId>com.spotify</groupId> <artifactId>docker-maven-plugin</artifactId> 
+				<version>0.3.5</version> <configuration> <imageName>stevengonsalvez/mnsctest:0.1</imageName> 
+				<baseImage>stevengonsalvez/mvnmuleelastic:2.0</baseImage> <dockerDirectory>.</dockerDirectory> 
+				<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint> 
+				copy the service's jar file from target into the root directory of the image 
+				<resources> <resource> <targetPath>/opt/mule/apps</targetPath> <directory>${project.build.directory}</directory> 
+				<include>${project.build.finalName}.zip</include> </resource> </resources> 
+				</configuration> </plugin> -->
 			<plugin>
 				<groupId>org.mule.tools.maven</groupId>
 				<artifactId>mule-app-maven-plugin</artifactId>
@@ -68,17 +62,17 @@
 							<groupId>org.mule.modules</groupId>
 							<artifactId>mule-module-apikit</artifactId>
 						</inclusion>
-					
-                    
-                    <inclusion>
-                            <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-extensions-support</artifactId>
-                        </inclusion>
-                    <inclusion>
-                            <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-extensions-spring-support</artifactId>
-                        </inclusion>
-                    </inclusions>
+
+
+						<inclusion>
+							<groupId>org.mule.modules</groupId>
+							<artifactId>mule-module-extensions-support</artifactId>
+						</inclusion>
+						<inclusion>
+							<groupId>org.mule.modules</groupId>
+							<artifactId>mule-module-extensions-spring-support</artifactId>
+						</inclusion>
+					</inclusions>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -136,9 +130,12 @@
 					<projectFile>${soapui.projectFile}</projectFile>
 					<skip>${skip.soapui.test}</skip>
 					<projectProperties>
-						<projectProperty>ENDPOINT_HOSTNAME=${soapui.endpoint.hostname}</projectProperty>
-						<projectProperty>ENDPOINT_USERNAME=${soapui.endpoint.username}</projectProperty>
-						<projectProperty>ENDPOINT_PASSWORD=${soapui.endpoint.password}</projectProperty>
+						<projectProperty>ENDPOINT_HOSTNAME=${soapui.endpoint.hostname}
+						</projectProperty>
+						<projectProperty>ENDPOINT_USERNAME=${soapui.endpoint.username}
+						</projectProperty>
+						<projectProperty>ENDPOINT_PASSWORD=${soapui.endpoint.password}
+						</projectProperty>
 					</projectProperties>
 				</configuration>
 				<executions>
@@ -168,30 +165,30 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-		<plugin>
-                <groupId>com.mulesoft.munit.tools</groupId>
-                <artifactId>munit-maven-plugin</artifactId>
-                <version>${munit.version}</version>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-	<testResources>
-            <testResource>
-                <directory>src/test/munit</directory>
-            </testResource>
-        <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-    </build>
+			<plugin>
+				<groupId>com.mulesoft.munit.tools</groupId>
+				<artifactId>munit-maven-plugin</artifactId>
+				<version>${munit.version}</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<testResources>
+			<testResource>
+				<directory>src/test/munit</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+	</build>
 
 	<!-- Mule Dependencies -->
 	<dependencies>
@@ -305,7 +302,8 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- commented this out as #shame , because this is not getting added , manually added jars.-->
+		<!-- commented this out as #shame , because this is not getting added , 
+			manually added jars. -->
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt-spring3</artifactId>
@@ -317,33 +315,33 @@
 			<artifactId>jasypt</artifactId>
 			<version>1.9.2</version>
 			<scope>provided</scope>
-		</dependency> 
+		</dependency>
 
-	<dependency>
-            <groupId>com.mulesoft.munit</groupId>
-            <artifactId>mule-munit-support</artifactId>
-            <version>${mule.munit.support.version}</version>
-            <scope>test</scope>
-        </dependency>
-    <dependency>
-            <groupId>com.mulesoft.munit</groupId>
-            <artifactId>munit-runner</artifactId>
-            <version>${munit.version}</version>
-            <scope>test</scope>
-        </dependency>
-    
-    
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-extensions-support</artifactId>
-            <version>${mule.version}</version>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-extensions-spring-support</artifactId>
-            <version>${mule.version}</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>mule-munit-support</artifactId>
+			<version>${mule.munit.support.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-runner</artifactId>
+			<version>${munit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-extensions-support</artifactId>
+			<version>${mule.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-extensions-spring-support</artifactId>
+			<version>${mule.version}</version>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>
@@ -367,7 +365,8 @@
 		<repository>
 			<id>mulesoft-dependencies</id>
 			<name>MuleSoft Dependencies</name>
-			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/public/
+			</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
@@ -397,7 +396,8 @@
 		<pluginRepository>
 			<id>mulesoft-dependencies</id>
 			<name>MuleSoft Dependencies</name>
-			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/public/
+			</url>
 			<layout>default</layout>
 		</pluginRepository>
 	</pluginRepositories>
@@ -405,15 +405,17 @@
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>mns.nexus.release</id>
-			<name>mns Release Repository</name>
-			<url>http://temp/nexus/content/repositories/mule-releases/</url>
+			<id>mns.corp.nexus.release</id>
+			<name>Marks and Spencer Corporate Release Repository</name>
+			<url>http://sgonsalvez:KernelPanic123@nexus.devops.mnscorp.net/content/repositories/sdk-artifacts/
+			</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
-			<id>mns.nexus.snapshot</id>
-			<name>mns Snapshot Repository</name>
-			<url>http://temp/nexus/content/repositories/mule-snapshots/</url>
+			<id>mns.corp.nexus.snapshot</id>
+			<name>Marks and Spencer Corporate Snapshot Repository</name>
+			<url>http://sgonsalvez:KernelPanic123@nexus.devops.mnscorp.net/content/repositories/sdk-artifacts/
+			</url>
 		</snapshotRepository>
 	</distributionManagement>
 
