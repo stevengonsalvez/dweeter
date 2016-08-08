@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:context="http://www.springframework.org/schema/context"
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:core="http://www.mulesoft.org/schema/mule/core"
@@ -8,7 +9,8 @@
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
@@ -18,8 +20,22 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
     
     <context:property-placeholder location="classpath:application.properties" />
+    <spring:beans>
+        <spring:bean id="WebSphereMQTargetConnectionFactory" name="WebSphereMQTargetConnectionFactory" class="com.ibm.mq.jms.MQConnectionFactory">
+            <spring:property name="hostName" value="${JMS_HOST}"/>
+            <spring:property name="port" value="${JMS_PORT}"/>
+            <spring:property name="queueManager" value="${JMS_QM}"/>
+            <spring:property name="transportType" value="1"/>
+            <spring:property name="channel" value="${JMS_CHANNEL}"/>
+        </spring:bean>
+    </spring:beans>
     
+    <!-- Target JMS configuration -->
     
+    <jms:connector name="JMS-TARGET" username="mqm" password="password" specification="1.1" connectionFactory-ref="WebSphereMQTargetConnectionFactory" validateConnections="true" doc:name="JMS">
+     		<service-overrides sessionHandler="org.mule.session.NullSessionHandler"/>
+     	</jms:connector>
+     	
     <http:request-config name="http_etc_shared" host="#[sessionVars.elastichost]" port="#[sessionVars.elasticport]" doc:name="HTTP shared elastic connector">
 		<tcp:client-socket-properties keepAlive="true" connectionTimeout="120000"  />
 	</http:request-config>
@@ -83,7 +99,9 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
         </scripting:component>
         <logger message="Returned data from ${THANG}" level="INFO" doc:name="Logger"/>
         <http:request config-ref="http_etc_shared" path="/_bulk" method="POST" doc:name="HTTP"/>
+        <object-to-string-transformer doc:name="Object to String"/>
         <logger message="successfully sent to elastic" level="INFO" doc:name="Logger"/>
+        <jms:outbound-endpoint queue="${JMS_QUEUE}" connector-ref="JMS-TARGET" doc:name="JMS Topic Publisher"/>
         <catch-exception-strategy doc:name="Catch Exception Strategy">
             <logger message="Something Failed over Here  || #[message.payloadAs(String)] ||  #[exception.getMessage()]" level="INFO" doc:name="Logger"/>
         </catch-exception-strategy>
